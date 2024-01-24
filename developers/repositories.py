@@ -19,7 +19,7 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
         return self._developer_to_dto(developer)
 
     def get_developer_by_uuid(self, developer_uuid: UUID) -> DeveloperDTO:
-        developer = get_object_or_None(Developer, uuid=developer_uuid)
+        developer = get_object_or_None(Developer, developer_uuid=developer_uuid)
         if not developer:
             raise DeveloperDoesNotExist()
         return self._developer_to_dto(developer)
@@ -27,7 +27,9 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
     def update_developer_by_uuid(
         self, developer_to_update: UpdateDeveloperDTO
     ) -> DeveloperDTO:
-        developer = Developer.objects.filter(uuid=developer_to_update.developer_uuid)
+        developer = Developer.objects.filter(
+            developer_uuid=developer_to_update.developer_uuid
+        )
         if not developer:
             raise DeveloperDoesNotExist()
         developer.update(
@@ -40,7 +42,7 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
         return self._developer_to_dto(developer)
 
     def delete_developer_by_uuid(self, developer_uuid: UUID) -> None:
-        developer = get_object_or_None(Developer, uuid=developer_uuid)
+        developer = get_object_or_None(Developer, developer_uuid=developer_uuid)
         if not developer:
             raise DeveloperDoesNotExist()
         developer.delete()

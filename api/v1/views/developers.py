@@ -44,13 +44,11 @@ class ApiDeveloperView(APIView, ApiBaseView):
         },
         tags=["Developers"],
     )
-    def get(self, request: Request):
+    def get(self, request: Request, developer_uuid: UUID):
         developer_interactor = DeveloperContainer.developer_interactor()
 
         try:
-            developer_dto = developer_interactor.get_developer_by_uuid(
-                request.data.developer_uuid
-            )
+            developer_dto = developer_interactor.get_developer_by_uuid(developer_uuid)
         except DeveloperDoesNotExist as exception:
             return self._create_response_not_found(exception)
 
@@ -181,7 +179,6 @@ class APICreateAllDevelopersView(APIView, ApiBaseView):
         ]
         return self._response_for_successful_list_of_developers(serialized_developers)
 
-
     @swagger_auto_schema(
         operation_description="Create new developer",
         request_body=CreateUpdateDeveloperDTOSerializer,
@@ -200,9 +197,7 @@ class APICreateAllDevelopersView(APIView, ApiBaseView):
         if not developer_serializer_is_valid:
             return self._create_response_for_invalid_serializers(developer_serializer)
 
-        developer_dto = CreateDeveloperDTO(
-            **developer_serializer.validated_data
-        )
+        developer_dto = CreateDeveloperDTO(**developer_serializer.validated_data)
 
         developer_interactor = DeveloperContainer.developer_interactor()
 
