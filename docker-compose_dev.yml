@@ -3,7 +3,7 @@ version: '3.7'
 services:
   db:
     image: 'postgres:latest'
-    container_name: postgres_service
+    container_name: postgres_service_jf
     env_file:
       - .env
     ports:
@@ -12,11 +12,11 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - service_data:/var/lib/postgresql/data/
     networks:
-      - django_network
+      - django_network_jf
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin_service
+    container_name: pgadmin_service_jf
     ports:
       - "3333:80"
     environment:
@@ -27,12 +27,12 @@ services:
     depends_on:
       - db
     networks:
-      - django_network
+      - django_network_jf
 
   web:
 #    restart: always
     build: .
-    container_name: backend_service
+    container_name: backend_service_jf
     command: ["/entrypoint.sh"]
     environment:
       - PYTHONUNBUFFERED=True
@@ -45,17 +45,17 @@ services:
     depends_on:
       - db
     networks:
-      - django_network
+      - django_network_jf
 
 #  redis:
 #    image: "redis:alpine"
 #    restart: always
-#    container_name: redis_container_service
+#    container_name: redis_container_service_jf
 #    command: redis-server --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
 #    ports:
 #      - "6379:6379"
 #    networks:
-#      - django_network
+#      - django_network_jf
 #
 #  redis-admin:
 #    image: rediscommander/redis-commander:latest
@@ -69,12 +69,12 @@ services:
 #    depends_on:
 #      - redis
 #    networks:
-#      - django_network
+#      - django_network_jf
 #
 #  celery:
 #    build: .
 #    command: celery -A core worker --loglevel=info
-#    container_name: celery_container_service
+#    container_name: celery_container_service_jf
 #    volumes:
 #      - .:/code
 #    env_file:
@@ -83,12 +83,12 @@ services:
 #      - redis
 #      - web
 #    networks:
-#      - django_network
+#      - django_network_jf
 #
 #  celery-beat:
 #    build: .
 #    command: /bin/sh -c "rm -f celerybeat-schedule && celery -A core beat --loglevel=info"
-#    container_name: celery_beat_service
+#    container_name: celery_beat_service_jf
 #    volumes:
 #      - .:/code
 #    env_file:
@@ -97,14 +97,14 @@ services:
 #      - redis
 #      - web
 #    networks:
-#      - django_network
+#      - django_network_jf
 #
 #  flower:
 #    container_name: flower
 #    image: mher/flower
-#    command: celery flower --broker=redis://redis_container_service:6379/0
+#    command: celery flower --broker=redis://redis_container_service_jf:6379/0
 #    environment:
-#      - CELERY_BROKER_URL=redis://:eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81@redis_container_service:6379/0
+#      - CELERY_BROKER_URL=redis://:eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81@redis_container_service_jf:6379/0
 #      - FLOWER_PORT=8082
 #    ports:
 #      - "8082:8082"
@@ -113,23 +113,23 @@ services:
 #      - web
 #      - celery
 #    networks:
-#      - django_network
+#      - django_network_jf
 
   nginx:
     build:
       context: ./nginx
-    container_name: nginx_service
+    container_name: nginx_service_jf
     ports:
       - "80:8000"
     depends_on:
       - web
     networks:
-      - django_network
+      - django_network_jf
 
 volumes:
   service_data:
     driver: local
 
 networks:
-  django_network:
+  django_network_jf:
     driver: bridge
