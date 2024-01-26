@@ -31,6 +31,6 @@ class UpdateDeveloperDTOSerializer(CreateDeveloperDTOSerializer):
     name_ua = serializers.CharField(max_length=50, required=False, allow_null=True)
     name_en = serializers.CharField(max_length=50, required=False, allow_null=True)
     role_ua = serializers.CharField(max_length=50, required=False, allow_null=True)
-    photo = serializers.CharField(max_length=50, required=False, allow_null=True)
+    photo = serializers.CharField(required=False, allow_null=True)
     photo_jpeg = serializers.ImageField(required=False, allow_null=True)
     is_active = serializers.BooleanField(required=False, allow_null=True, default=None)
