@@ -2,7 +2,7 @@ from uuid import UUID
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from rest_framework import status, parsers
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -11,9 +11,11 @@ from api.v1.schemas.developers import (
     created_developer_response_schema,
     list_of_developers_response_schema,
 )
-from api.v1.serializers.developers import CreateUpdateDeveloperDTOSerializer
+from api.v1.serializers.developers import (
+    CreateDeveloperDTOSerializer,
+    UpdateDeveloperDTOSerializer,
+)
 from api.v1.views.base import ApiBaseView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from developers.dto import CreateDeveloperDTO, UpdateDeveloperDTO
@@ -25,6 +27,11 @@ class ApiDeveloperView(APIView, ApiBaseView):
     """Endpoints for developer's management"""
 
     # permission_classes = [IsAuthenticated, ]
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.FileUploadParser,
+    )
 
     @swagger_auto_schema(
         operation_description="Get developer's detailed info by UUID",
@@ -59,14 +66,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
 
     @swagger_auto_schema(
         operation_description="Update developer information",
-        manual_parameters=[
-            openapi.Parameter(
-                "developer_uuid",
-                in_=openapi.IN_PATH,
-                type=openapi.TYPE_STRING,
-                format=openapi.FORMAT_UUID,
-            )
-        ],
+        request_body=UpdateDeveloperDTOSerializer,
         responses={
             201: openapi.Response(
                 "Update developer information by UUID",
@@ -78,7 +78,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
         tags=["Developers"],
     )
     def put(self, request: Request, developer_uuid: UUID):
-        developer_serializer = CreateUpdateDeveloperDTOSerializer(data=request.data)
+        developer_serializer = UpdateDeveloperDTOSerializer(data=request.data)
         developer_serializer_is_valid = developer_serializer.is_valid()
 
         if not developer_serializer_is_valid:
@@ -92,7 +92,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
 
         try:
             updated_developer = developer_interactor.update_developer_by_uuid(
-                developer_dto
+                developer_dto, bytesio_file = request.data.get("photo_jpeg", None)
             )
         except DeveloperDoesNotExist as exception:
             return self._create_response_not_found(exception)
@@ -159,6 +159,11 @@ class ApiDeveloperView(APIView, ApiBaseView):
 
 
 class APICreateAllDevelopersView(APIView, ApiBaseView):
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.FileUploadParser,
+    )
     """get"""
 
     @swagger_auto_schema(
@@ -181,7 +186,7 @@ class APICreateAllDevelopersView(APIView, ApiBaseView):
 
     @swagger_auto_schema(
         operation_description="Create new developer",
-        request_body=CreateUpdateDeveloperDTOSerializer,
+        request_body=CreateDeveloperDTOSerializer,
         responses={
             201: openapi.Response(
                 "Created developer", created_developer_response_schema
@@ -191,17 +196,20 @@ class APICreateAllDevelopersView(APIView, ApiBaseView):
         tags=["Developers"],
     )
     def post(self, request: Request):
-        developer_serializer = CreateUpdateDeveloperDTOSerializer(data=request.data)
+        developer_serializer = CreateDeveloperDTOSerializer(data=request.data)
         developer_serializer_is_valid = developer_serializer.is_valid()
 
         if not developer_serializer_is_valid:
             return self._create_response_for_invalid_serializers(developer_serializer)
 
+        bytesio_file = request.data.get("photo_jpeg", None)
         developer_dto = CreateDeveloperDTO(**developer_serializer.validated_data)
 
         developer_interactor = DeveloperContainer.developer_interactor()
 
-        created_developer = developer_interactor.create_developer(developer_dto)
+        created_developer = developer_interactor.create_developer(
+            developer_dto, bytesio_file
+        )
         created_developer_serializer_data = created_developer.model_dump()
 
         return self._create_response_for_successful_developer_creation(

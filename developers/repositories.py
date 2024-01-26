@@ -32,12 +32,16 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
         )
         if not developer:
             raise DeveloperDoesNotExist()
-        developer.update(
-            name_ua=developer_to_update.name_ua,
-            name_en=developer_to_update.name_en,
-            role_ua=developer_to_update.role_ua,
-            photo=developer_to_update.photo,
-        )
+        filtered_param_without_none = {
+            k: v for k, v in developer_to_update.model_dump().items() if v is not None
+        }
+        # result = (
+        #     await tables.Question.update(filtered_param)
+        #     .where(tables.Question.id == id)
+        #     .returning(tables.Question.id)
+        # )
+
+        developer.update(**filtered_param_without_none)
         developer = developer.get()
         return self._developer_to_dto(developer)
 
