@@ -32,6 +32,8 @@ services:
   web:
 #    restart: always
     build: .
+    # set to root user
+    # user: root
     container_name: backend_service_jf
     command: ["/entrypoint.sh"]
     environment:
@@ -40,6 +42,7 @@ services:
       - .env
     volumes:
       - .:/code
+      - ./cloud_img:/cloud_img
     links:
       - db:db
     depends_on:
@@ -128,6 +131,8 @@ services:
 
 volumes:
   service_data:
+    driver: local
+  cloud_img:
     driver: local
 
 networks:
