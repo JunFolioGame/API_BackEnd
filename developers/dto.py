@@ -8,7 +8,7 @@ class CreateDeveloperDTO(BaseModel):
     name_ua: str
     name_en: str
     role_ua: str
-    photo: str
+    photo: Optional[str] = None
     is_active: bool = False
 
 
