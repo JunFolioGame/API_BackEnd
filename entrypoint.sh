@@ -11,6 +11,7 @@ done
 
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createsuperuser --no-input
 # TODO uncomment after added a User model and delete
 #python manage.py createsuperuser --username=admin --email=admin@example.com
 
