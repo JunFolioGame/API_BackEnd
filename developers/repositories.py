@@ -15,6 +15,7 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
             name_en=developer.name_en,
             role_ua=developer.role_ua,
             photo=developer.photo,
+            is_active=developer.is_active
         )
         return self._developer_to_dto(developer)
 
@@ -35,12 +36,6 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
         filtered_param_without_none = {
             k: v for k, v in developer_to_update.model_dump().items() if v is not None
         }
-        # result = (
-        #     await tables.Question.update(filtered_param)
-        #     .where(tables.Question.id == id)
-        #     .returning(tables.Question.id)
-        # )
-
         developer.update(**filtered_param_without_none)
         developer = developer.get()
         return self._developer_to_dto(developer)
