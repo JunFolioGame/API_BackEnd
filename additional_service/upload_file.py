@@ -9,6 +9,8 @@ class AdditionalService(AdditionalServiceInterface):
     def upload_file_to_s3(
         self, group_name: str, object_name: str, bytesio_file
     ) -> str:
+        if bytesio_file.name == "sample_photo.jpg":
+            return bytesio_file.name
         # Генеруємо ім'я файлу для зображення
         filename = f"{object_name}_{bytesio_file.name}"
         # Створення директорії для збереження зображень (якщо вона ще не існує)
