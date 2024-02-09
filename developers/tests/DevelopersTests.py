@@ -243,6 +243,26 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["is_active"], True)
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
+    def test_developer_update_photo_success(self):
+
+        update_data = {
+            "photo": "Фото 2",
+        }
+        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.data
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data["message"], "Successful update developer information")
+
+        user = data["data"]
+        self.assertEqual(user["name_ua"], "тест_1")
+        self.assertEqual(user["name_en"], "test_1")
+        self.assertEqual(user["role_ua"], "Користувач")
+        self.assertEqual(user["photo"], "Фото 2")
+        self.assertEqual(user["is_active"], True)
+        self.assertEqual(user["developer_uuid"], self.developer_uuid)
+
     def test_developer_update_is_active_success(self):
 
         update_data = {
@@ -269,6 +289,7 @@ class DevelopersTests(APITestCase):
             "name_ua": "Петро",
             "name_en": "Petro",
             "role_ua": "Власник",
+            "photo": "Фото 2",
             "is_active": False,
         }
         response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
@@ -282,7 +303,7 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["name_ua"], "Петро")
         self.assertEqual(user["name_en"], "Petro")
         self.assertEqual(user["role_ua"], "Власник")
-        self.assertEqual(user["photo"], "Фото")
+        self.assertEqual(user["photo"], "Фото 2")
         self.assertEqual(user["is_active"], False)
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
