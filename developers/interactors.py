@@ -1,9 +1,9 @@
 from typing import List
 from uuid import UUID
 
+from additional_service.services_interfaces import AdditionalServiceInterface
 from developers.dto import CreateDeveloperDTO, DeveloperDTO, UpdateDeveloperDTO
 from developers.services_interfaces import DeveloperServiceInterface
-from additional_service.services_interfaces import AdditionalServiceInterface
 
 
 class DeveloperInteractor:
@@ -17,9 +17,7 @@ class DeveloperInteractor:
         self.developer_service = developer_service
         self.additional_service = additional_service
 
-    def create_developer(
-        self, developer_dto: CreateDeveloperDTO, bytesio_file
-    ) -> DeveloperDTO:
+    def create_developer(self, developer_dto: CreateDeveloperDTO, bytesio_file) -> DeveloperDTO:
         """Create new developer"""
         if bytesio_file:
             image_path = self.additional_service.upload_file_to_s3(
@@ -47,6 +45,8 @@ class DeveloperInteractor:
         return self.developer_service.update_developer_by_uuid(developer_to_update)
 
     def delete_developer_by_uuid(self, developer_uuid: UUID) -> None:
+        photo_url = self.get_developer_by_uuid(developer_uuid=developer_uuid).photo
+        self.additional_service.delete_file_from_s3(photo_url=photo_url)
         return self.developer_service.delete_developer_by_uuid(developer_uuid)
 
     def get_all_developers(self) -> List[DeveloperDTO]:

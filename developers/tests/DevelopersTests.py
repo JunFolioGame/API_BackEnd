@@ -424,3 +424,5 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["name_en"], "test_2")
         self.assertEqual(user["role_ua"], "Власник")
         self.assertEqual(user["is_active"], False)
+        # Видаляємо фото, щоб не засмічувати пам'ять
+        self.client.delete(self.url + str(user["developer_uuid"]))

@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from developers.interactors import DeveloperInteractor
 from developers.repositories import DeveloperRepository
 from developers.services import DeveloperService
-from additional_service.upload_file import AdditionalService
+from additional_service.upload_delete_file import AdditionalService
 
 
 class AdditionalServiceContainer(containers.DeclarativeContainer):
