@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from api.v1.views.swagger import staff_protected_schema_view
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # TODO Uncomment after added api urls and schema_view
-    # path('', staff_protected_schema_view, name='schema-swagger-ui'),
-    path('api/v1/', include('api.v1.urls', namespace='api')),
-    path('__debug__/', include('debug_toolbar.urls')),
+    path("", staff_protected_schema_view, name="schema-swagger-ui"),
+    path("api/v1/", include("api.v1.urls", namespace="api")),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

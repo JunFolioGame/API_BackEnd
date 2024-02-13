@@ -11,7 +11,11 @@ done
 
 python manage.py makemigrations
 python manage.py migrate
-# TODO uncomment after added a User model
+python manage.py test
+python manage.py createsuperuser --no-input
+# TODO uncomment after added a User model and delete
+#python manage.py createsuperuser --username=admin --email=admin@example.com
+
 #python manage.py shell <<EOF
 #from django.contrib.auth import get_user_model
 #from accounts.models import Profile
