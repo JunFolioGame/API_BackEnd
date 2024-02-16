@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # user app
     "developers.apps.DevelopersConfig",
+    "catalog.apps.CatalogConfig",
     "api.v1.apps.ApiConfig",
 ]
 

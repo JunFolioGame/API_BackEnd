@@ -10,7 +10,7 @@ from developers.repository_interfaces import AbstractDeveloperRepositoryInterfac
 
 class DeveloperRepository(AbstractDeveloperRepositoryInterface):
     def create_developer(self, developer: CreateDeveloperDTO) -> DeveloperDTO:
-        developer = Developer.objects.create(
+        developer = Developer.objects.get_or_create(
             name_ua=developer.name_ua,
             name_en=developer.name_en,
             role_ua=developer.role_ua,
