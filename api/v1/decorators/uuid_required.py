@@ -11,19 +11,14 @@ def uuid_required(func):
         api_adress = request.META.get("REMOTE_ADDR")
         browser_info = request.META.get("HTTP_USER_AGENT")
         try:
-            if player_uuid:
-                player = interactor.get_player_by_uuid(player_uuid=player_uuid)
-            else:
-                raise PlayerDoesNotExist
-        except PlayerDoesNotExist:
-            try:
+            if not player_uuid:
                 player = interactor.get_player_by_options(
                     CreatePlayerDTO(api_adress=api_adress, browser_info=browser_info)
                 )
-            except PlayerDoesNotExist:
-                player = interactor.create_player(
-                    player=CreatePlayerDTO(api_adress=api_adress, browser_info=browser_info)
-                )
+        except PlayerDoesNotExist:
+            player = interactor.create_player(
+                player=CreatePlayerDTO(api_adress=api_adress, browser_info=browser_info)
+            )
         finally:
             player_uuid = player.player_uuid
         request.COOKIES["PLAYER_UUID"] = player_uuid
