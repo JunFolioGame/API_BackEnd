@@ -148,7 +148,7 @@ class DevelopersTests(APITestCase):
             "{'photo_jpeg': [ErrorDetail(string='Розмір файлу перевищує максимально допустимий розмір 10485760 байт.', code='invalid')]}",
         )
 
-    def test_developer_update_photo_success(self):
+    def test_developer_update_photo_jpeg_success(self):
 
         update_data = {"photo_jpeg": self.photo_jpeg}
         response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
@@ -164,6 +164,8 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["role_ua"], "Користувач")
         self.assertEqual(user["is_active"], True)
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
+        # Видаляємо фото, щоб не засмічувати пам'ять
+        self.client.delete(self.url + str(user["developer_uuid"]))
 
     def test_developer_update_empty_success(self):
 

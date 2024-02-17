@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "taggit",
     "corsheaders",
     # user app
+    "players.apps.PlayersConfig",
     "developers.apps.DevelopersConfig",
     "catalog.apps.CatalogConfig",
     "api.v1.apps.ApiConfig",
