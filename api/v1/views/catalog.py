@@ -18,7 +18,7 @@ from api.v1.serializers.catalog import (
 from api.v1.views.base import ApiBaseView
 from rest_framework.views import APIView
 
-from catalog.dto import CreateGameInfoDTO, UpdateGameInfoDTO
+from catalog.dto import CreateGameInfoDTO, UpdateGameInfoDTORequest
 from core.containers import ProjectContainer as GameInfoContainer
 from catalog.exceptions import GameInfoDoesNotExist
 
@@ -37,7 +37,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
         operation_description="Get game_info detailed info by UUID",
         manual_parameters=[
             openapi.Parameter(
-                "game_info_uuid",
+                "uuid",
                 in_=openapi.IN_PATH,
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_UUID,
@@ -51,11 +51,11 @@ class ApiGameInfoView(APIView, ApiBaseView):
         },
         tags=["GameInfo"],
     )
-    def get(self, request: Request, game_info_uuid: UUID):
+    def get(self, request: Request, uuid: UUID):
         game_info_interactor = GameInfoContainer.game_info_interactor()
 
         try:
-            game_info_dto = game_info_interactor.get_game_info_by_uuid(game_info_uuid)
+            game_info_dto = game_info_interactor.get_game_info_by_uuid(uuid)
         except GameInfoDoesNotExist as exception:
             return self._create_response_not_found(exception)
 
@@ -77,15 +77,15 @@ class ApiGameInfoView(APIView, ApiBaseView):
         },
         tags=["GameInfo"],
     )
-    def put(self, request: Request, game_info_uuid: UUID):
+    def put(self, request: Request, uuid: UUID):
         game_info_serializer = UpdateGameInfoDTOSerializer(data=request.data)
         game_info_serializer_is_valid = game_info_serializer.is_valid()
 
         if not game_info_serializer_is_valid:
             return self._create_response_for_invalid_serializers(game_info_serializer)
 
-        game_info_dto = UpdateGameInfoDTO(
-            game_info_uuid=game_info_uuid, **game_info_serializer.validated_data
+        game_info_dto = UpdateGameInfoDTORequest(
+            uuid=uuid, **game_info_serializer.validated_data
         )
 
         game_info_interactor = GameInfoContainer.game_info_interactor()
@@ -104,7 +104,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
         operation_description="Delete game_info",
         manual_parameters=[
             openapi.Parameter(
-                "game_info_uuid",
+                "uuid",
                 in_=openapi.IN_PATH,
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_UUID,
@@ -116,13 +116,13 @@ class ApiGameInfoView(APIView, ApiBaseView):
         },
         tags=["GameInfo"],
     )
-    def delete(self, request: Request, game_info_uuid: UUID):
+    def delete(self, request: Request, uuid: UUID):
         game_info_interactor = GameInfoContainer.game_info_interactor()
         try:
-            game_info_interactor.delete_game_info_by_uuid(game_info_uuid)
+            result = game_info_interactor.delete_game_info_by_uuid(uuid)
         except GameInfoDoesNotExist as exception:
             return self._create_response_not_found(exception)
-        return self._delete_response()
+        return self._delete_response(result)
 
     @staticmethod
     def _create_response_for_successful_get_game_info(game_info_serializer_data):
@@ -147,12 +147,12 @@ class ApiGameInfoView(APIView, ApiBaseView):
         )
 
     @staticmethod
-    def _delete_response():
+    def _delete_response(data=None):
         return Response(
             {
                 "status": "success",
                 "message": f"Successful delete game_info.",
-                "data": None,
+                "data": data,
             },
             status=status.HTTP_200_OK,
         )
@@ -166,10 +166,10 @@ class APICreateAllGameInfoView(APIView, ApiBaseView):
     )
 
     @swagger_auto_schema(
-        operation_description="Get all game_infos",
+        operation_description="Get all game_info",
         responses={
             200: openapi.Response(
-                "List of all game_infos", list_of_game_info_response_schema
+                "List of all game_info", list_of_game_info_response_schema
             ),
         },
         tags=["GameInfo"],
@@ -177,7 +177,7 @@ class APICreateAllGameInfoView(APIView, ApiBaseView):
     def get(self, request: Request):
         """Get all GameInfo"""
         game_info_interactor = GameInfoContainer.game_info_interactor()
-        list_of_game_infos = game_info_interactor.get_all_game_infos()
+        list_of_game_infos = game_info_interactor.get_all_game_info()
         serialized_game_infos = [
             game_info.model_dump() for game_info in list_of_game_infos
         ]

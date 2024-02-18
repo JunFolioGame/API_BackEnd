@@ -8,8 +8,8 @@ class CreateGameInfoDTOSerializer(serializers.Serializer):
     description_ua = serializers.CharField(max_length=50)
     description_en = serializers.CharField(max_length=50)
     photo_jpeg = serializers.ImageField()
-    is_team = serializers.BooleanField(required=False, allow_null=True, default=None)
-    is_active = serializers.BooleanField(required=False, allow_null=True, default=None)
+    is_team = serializers.BooleanField(required=False, allow_null=True, default=False)
+    is_active = serializers.BooleanField(required=False, allow_null=True, default=False)
 
     def validate_photo_jpeg(self, value):
         # перевірка розміру файлу
@@ -29,4 +29,3 @@ class UpdateGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
     description_en = serializers.CharField(max_length=50, required=False, allow_null=True)
     photo = serializers.CharField(required=False, allow_null=True)
     photo_jpeg = serializers.ImageField(required=False, allow_null=True)
-    is_active = serializers.BooleanField(required=False, allow_null=True, default=None)

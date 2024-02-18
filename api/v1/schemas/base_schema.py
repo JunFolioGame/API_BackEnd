@@ -85,7 +85,7 @@ game_info_properties = (
                 type=openapi.TYPE_STRING,
                 description="game_info photo",
             ),
-            "stat": openapi.Schema(
+            "number": openapi.Schema(
                 type=openapi.TYPE_INTEGER,
                 description="Game popularity",
             ),
