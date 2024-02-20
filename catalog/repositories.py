@@ -49,12 +49,12 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
         game_info_objs = GameInfo.objects.filter(uuid=uuid)
         if not game_info_objs:
             raise GameInfoDoesNotExist()
-        photo_list = list(game_info_objs.values_list('photo', flat=True).distinct())
+        photo_list = list(game_info_objs.values_list("photo", flat=True).distinct())
         # # Отримати значення поля param_2 зі зв'язаної моделі MyModel2
         # parametr_2_values = MyModel.objects.filter(parametr_1=1).values_list("parametr_2__param_2", flat=True)
 
         _, result_of_delete_operation = game_info_objs.delete()
-        result_of_delete_operation['photo_list'] = photo_list
+        result_of_delete_operation["photo_list"] = photo_list
         return result_of_delete_operation
 
     def get_all_game_info(self) -> list[GameInfoDTOResponse]:

@@ -25,7 +25,11 @@ class CreateGameInfoDTOSerializer(serializers.Serializer):
 class UpdateGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
     name_ua = serializers.CharField(max_length=50, required=False, allow_null=True)
     name_en = serializers.CharField(max_length=50, required=False, allow_null=True)
-    description_ua = serializers.CharField(max_length=50, required=False, allow_null=True)
-    description_en = serializers.CharField(max_length=50, required=False, allow_null=True)
+    description_ua = serializers.CharField(
+        max_length=50, required=False, allow_null=True
+    )
+    description_en = serializers.CharField(
+        max_length=50, required=False, allow_null=True
+    )
     photo = serializers.CharField(required=False, allow_null=True)
     photo_jpeg = serializers.ImageField(required=False, allow_null=True)

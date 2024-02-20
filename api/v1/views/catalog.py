@@ -23,6 +23,96 @@ from core.containers import ProjectContainer as GameInfoContainer
 from catalog.exceptions import GameInfoDoesNotExist
 
 
+class APICreateGameInfoView(APIView, ApiBaseView):
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.FileUploadParser,
+    )
+
+    @swagger_auto_schema(
+        operation_description="""
+        Create new game_info
+        
+        Parameters:
+        - `name_ua` (String): Ukr name for game_info, required.
+        - `name_en` (String): Eng name for game_info, required.
+        - `photo` (String): game_info photo, required.
+        - `description_ua` (String): Description of game, ua, required.
+        - `description_en` (String): Description of game, eng, required.
+        - `is_team` (Bool): The number of the event, optional.
+        - `members` (Integer): Number of participants, required.
+        
+           
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.   
+        
+        Example of successful processing:
+        
+        {
+          "status": "success",
+          "message": "Successful game_info creation",
+          "data": {
+            "name_ua": "133",
+            "name_en": "12323123",
+            "photo": "./cloud_img/game_info/12323123\\12323123_11lab_price.png",
+            "description_ua": "21313",
+            "description_en": "12",
+            "is_team": false,
+            "is_active": false,
+            "members": 0,
+            "uuid": "d80de9cf-3516-450b-9173-03476d8270e6",
+            "like__number": 0
+          }
+        }
+        
+        """,
+        request_body=CreateGameInfoDTOSerializer,
+        responses={
+            201: openapi.Response(
+                "Created game_info", created_game_info_response_schema
+            ),
+            400: error_response,
+        },
+        tags=["GameInfo"],
+    )
+    def post(self, request: Request):
+        game_info_serializer = CreateGameInfoDTOSerializer(data=request.data)
+        game_info_serializer_is_valid = game_info_serializer.is_valid()
+
+        if not game_info_serializer_is_valid:
+            return self._create_response_for_invalid_serializers(game_info_serializer)
+
+        bytesio_file = request.data.get("photo_jpeg", None)
+        game_info_dto = CreateGameInfoDTO(**game_info_serializer.validated_data)
+
+        game_info_interactor = GameInfoContainer.game_info_interactor()
+
+        created_game_info = game_info_interactor.create_game_info(
+            game_info_dto, bytesio_file
+        )
+        created_game_info_serializer_data = created_game_info.model_dump()
+
+        return self._create_response_for_successful_game_info_creation(
+            created_game_info_serializer_data
+        )
+
+    @staticmethod
+    def _create_response_for_successful_game_info_creation(
+        created_game_info_serializer_data,
+    ):
+        return Response(
+            {
+                "status": "success",
+                "message": f"Successful game_info creation",
+                "data": created_game_info_serializer_data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
 class ApiGameInfoView(APIView, ApiBaseView):
     """Endpoints for game_info management"""
 
@@ -34,7 +124,36 @@ class ApiGameInfoView(APIView, ApiBaseView):
     )
 
     @swagger_auto_schema(
-        operation_description="Get game_info detailed info by UUID",
+        operation_description="""
+        Get game_info detailed info by UUID
+        
+        Parameters:
+        - `uuid` (UUID): The ID of the game info, required.
+
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.   
+
+        Example of successful processing:
+        
+        {
+          "status": "success",
+          "message": "Successful get game_info information",
+          "data": {
+            "name_ua": "133",
+            "name_en": "12323123",
+            "photo": "./cloud_img/game_info/12323123\\12323123_11lab_price.png",
+            "description_ua": "21313",
+            "description_en": "12",
+            "is_team": false,
+            "is_active": false,
+            "members": 0,
+            "uuid": "d80de9cf-3516-450b-9173-03476d8270e6",
+            "like__number": 0
+          }
+        }
+        """,
         manual_parameters=[
             openapi.Parameter(
                 "uuid",
@@ -65,7 +184,44 @@ class ApiGameInfoView(APIView, ApiBaseView):
         )
 
     @swagger_auto_schema(
-        operation_description="Update game_info information",
+        operation_description="""
+        Update game_info information
+        
+        Parameters for additional updating:
+        - `uuid` (UUID): The ID of the game_info, `required`.
+        - `name_ua` (String): Ukr name for game_info, optional.
+        - `name_en` (String): Eng name for game_info, optional.
+        - `photo` (String): game_info photo, optional.
+        - `description_ua` (String): Description of game, ua, optional.
+        - `description_en` (String): Description of game, eng, optional.
+        - `is_team` (Bool): The number of the event, optional.
+        - `members` (Integer): Number of participants, optional.
+        
+           
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.   
+        
+        Example of successful processing:
+    
+        {
+          "status": "success",
+          "message": "Successful update game_info information",
+          "data": {
+            "name_ua": "1212",
+            "name_en": "12131",
+            "photo": "./cloud_img/game_info/12131\\12131_photo1701504269.jpeg",
+            "description_ua": "12",
+            "description_en": "12",
+            "is_team": false,
+            "is_active": false,
+            "members": 0,
+            "uuid": "5bce6e2d-2f51-4df1-926b-d4747d0d9ecc",
+            "like__number": 0
+          }
+        }
+        """,
         request_body=UpdateGameInfoDTOSerializer,
         responses={
             201: openapi.Response(
@@ -101,7 +257,32 @@ class ApiGameInfoView(APIView, ApiBaseView):
         return self._update_response(updated_game_info_serializer_data)
 
     @swagger_auto_schema(
-        operation_description="Delete game_info",
+        operation_description="""
+        Delete game_info
+        
+        Parameters:
+        - `uuid` (UUID): The ID of the game info, required.
+
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.   
+
+        Example of successful processing:
+        
+        {
+          "status": "success",
+          "message": "Successful delete game_info.",
+          "data": {
+            "catalog.Like": 1,
+            "catalog.GameInfo": 1,
+            "photo_list": [
+              "./cloud_img/game_info/12323123\\12323123_11lab_price.png"
+            ]
+          }
+        }
+        
+        """,
         manual_parameters=[
             openapi.Parameter(
                 "uuid",
@@ -158,7 +339,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
         )
 
 
-class APICreateAllGameInfoView(APIView, ApiBaseView):
+class APIAllGameInfoView(APIView, ApiBaseView):
     parser_classes = (
         parsers.FormParser,
         parsers.MultiPartParser,
@@ -166,7 +347,62 @@ class APICreateAllGameInfoView(APIView, ApiBaseView):
     )
 
     @swagger_auto_schema(
-        operation_description="Get all game_info",
+        operation_description="""
+        Get all game_info
+        
+        Parameters:
+         - `none`
+         
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.   
+        
+        Example of successful processing:
+        
+        {
+          "status": "success",
+          "message": "Successful get list of all game_infos",
+          "data": [
+            {
+              "name_ua": "1212",
+              "name_en": "12131",
+              "photo": "./cloud_img/game_info/12131\\12131_photo1701504269.jpeg",
+              "description_ua": "12",
+              "description_en": "12",
+              "is_team": false,
+              "is_active": false,
+              "members": 0,
+              "uuid": "5bce6e2d-2f51-4df1-926b-d4747d0d9ecc",
+              "like__number": 0
+            },
+            {
+              "name_ua": "фв",
+              "name_en": "фвф",
+              "photo": "./cloud_img/game_info/фвф\\фвф_photo1701504269.jpeg",
+              "description_ua": "12",
+              "description_en": "12",
+              "is_team": false,
+              "is_active": false,
+              "members": 0,
+              "uuid": "522f74ea-5093-45eb-bd9d-2d30b843c8f8",
+              "like__number": 0
+            },
+            {
+              "name_ua": "awda",
+              "name_en": "wd",
+              "photo": "./cloud_img/game_info/wd\\wd_11lab_price.png",
+              "description_ua": "ac",
+              "description_en": "asc",
+              "is_team": false,
+              "is_active": false,
+              "members": 0,
+              "uuid": "87a8af4d-40e3-4c0d-b8af-e504a23faaa0",
+              "like__number": 0
+            }
+          ]
+        }
+        """,
         responses={
             200: openapi.Response(
                 "List of all game_info", list_of_game_info_response_schema
@@ -181,42 +417,84 @@ class APICreateAllGameInfoView(APIView, ApiBaseView):
         serialized_game_infos = [
             game_info.model_dump() for game_info in list_of_game_infos
         ]
-        return self._response_for_successful_list_of_game_infos(serialized_game_infos)
+        return self._response_for_successful_list_of_game_info(serialized_game_infos)
 
     @swagger_auto_schema(
-        operation_description="Create new game_info",
-        request_body=CreateGameInfoDTOSerializer,
+        operation_description="""
+        Get all game_info, or with additional filtering.
+    
+        Parameters:
+         - `none`
+    
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.   
+    
+        Example of successful processing:
+    
+        {
+          "status": "success",
+          "message": "Successful get list of all game_infos",
+          "data": [
+            {
+              "name_ua": "1212",
+              "name_en": "12131",
+              "photo": "./cloud_img/game_info/12131\\12131_photo1701504269.jpeg",
+              "description_ua": "12",
+              "description_en": "12",
+              "is_team": false,
+              "is_active": false,
+              "members": 0,
+              "uuid": "5bce6e2d-2f51-4df1-926b-d4747d0d9ecc",
+              "like__number": 0
+            },
+            {
+              "name_ua": "фв",
+              "name_en": "фвф",
+              "photo": "./cloud_img/game_info/фвф\\фвф_photo1701504269.jpeg",
+              "description_ua": "12",
+              "description_en": "12",
+              "is_team": false,
+              "is_active": false,
+              "members": 0,
+              "uuid": "522f74ea-5093-45eb-bd9d-2d30b843c8f8",
+              "like__number": 0
+            },
+            {
+              "name_ua": "awda",
+              "name_en": "wd",
+              "photo": "./cloud_img/game_info/wd\\wd_11lab_price.png",
+              "description_ua": "ac",
+              "description_en": "asc",
+              "is_team": false,
+              "is_active": false,
+              "members": 0,
+              "uuid": "87a8af4d-40e3-4c0d-b8af-e504a23faaa0",
+              "like__number": 0
+            }
+          ]
+        }
+        """,
         responses={
-            201: openapi.Response(
-                "Created game_info", created_game_info_response_schema
+            200: openapi.Response(
+                "List of all game_info, or with additional filtering.",
+                list_of_game_info_response_schema,
             ),
-            400: error_response,
         },
         tags=["GameInfo"],
     )
     def post(self, request: Request):
-        game_info_serializer = CreateGameInfoDTOSerializer(data=request.data)
-        game_info_serializer_is_valid = game_info_serializer.is_valid()
-
-        if not game_info_serializer_is_valid:
-            return self._create_response_for_invalid_serializers(game_info_serializer)
-
-        bytesio_file = request.data.get("photo_jpeg", None)
-        game_info_dto = CreateGameInfoDTO(**game_info_serializer.validated_data)
-
+        """Get all GameInfo, or with additional filtering."""
         game_info_interactor = GameInfoContainer.game_info_interactor()
-
-        created_game_info = game_info_interactor.create_game_info(
-            game_info_dto, bytesio_file
-        )
-        created_game_info_serializer_data = created_game_info.model_dump()
-
-        return self._create_response_for_successful_game_info_creation(
-            created_game_info_serializer_data
-        )
+        list_of_game_infos = game_info_interactor.get_all_game_info()
+        serialized_game_infos = [
+            game_info.model_dump() for game_info in list_of_game_infos
+        ]
+        return self._response_for_successful_list_of_game_info(serialized_game_infos)
 
     @staticmethod
-    def _response_for_successful_list_of_game_infos(game_infos_serializer_data):
+    def _response_for_successful_list_of_game_info(game_infos_serializer_data):
         return Response(
             {
                 "status": "success",
@@ -224,17 +502,4 @@ class APICreateAllGameInfoView(APIView, ApiBaseView):
                 "data": game_infos_serializer_data,
             },
             status=status.HTTP_200_OK,
-        )
-
-    @staticmethod
-    def _create_response_for_successful_game_info_creation(
-        created_game_info_serializer_data,
-    ):
-        return Response(
-            {
-                "status": "success",
-                "message": f"Successful game_info creation",
-                "data": created_game_info_serializer_data,
-            },
-            status=status.HTTP_201_CREATED,
         )

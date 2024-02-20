@@ -17,7 +17,9 @@ class GameInfoInteractor:
         self.game_info_service = game_info_service
         self.additional_service = additional_service
 
-    def create_game_info(self, game_info_dto: CreateGameInfoDTO, bytesio_file) -> GameInfoDTOResponse:
+    def create_game_info(
+        self, game_info_dto: CreateGameInfoDTO, bytesio_file
+    ) -> GameInfoDTOResponse:
         """Create new game_info"""
         if bytesio_file:
             image_path = self.additional_service.upload_file_to_s3(
@@ -45,8 +47,10 @@ class GameInfoInteractor:
         return self.game_info_service.update_game_info_by_uuid(game_info_to_update)
 
     def delete_game_info_by_uuid(self, uuid: UUID) -> dict:
-        result_of_delete_operation = self.game_info_service.delete_game_info_by_uuid(uuid)
-        list_photo_url = result_of_delete_operation.get('photo_list', None)
+        result_of_delete_operation = self.game_info_service.delete_game_info_by_uuid(
+            uuid
+        )
+        list_photo_url = result_of_delete_operation.get("photo_list", None)
         for photo_url in list_photo_url:
             self.additional_service.delete_file_from_s3(photo_url=photo_url)
 

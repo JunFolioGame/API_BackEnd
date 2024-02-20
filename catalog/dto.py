@@ -32,4 +32,3 @@ class UpdateGameInfoDTORequest(GameInfoDTOResponse):
     photo: Optional[str] = None
     is_active: Optional[bool] = None
     is_team: Optional[bool] = None
-

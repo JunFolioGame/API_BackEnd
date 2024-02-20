@@ -9,6 +9,7 @@ class CoreModel(models.Model):
         auto_now_add=True, db_index=True, verbose_name="created"
     )
     update_at = models.DateTimeField(auto_now=True, verbose_name="updated")
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
 
     class Meta:
         abstract = True
@@ -19,13 +20,6 @@ class GameInfo(CoreModel):
 
     name_ua = models.TextField("Назва ua", max_length=50, unique=True)
     name_en = models.TextField("Назва en", max_length=50, unique=True)
-    # photo = models.ManyToManyField(
-    #     Picture,
-    #     blank=True,
-    #     null=True,
-    #     related_name="game_info_picture",
-    #     verbose_name="Зображення",
-    # )
     photo = models.CharField(max_length=255, verbose_name="Зображння")
     description_ua = models.TextField("Опис ua")
     description_en = models.TextField("Опис en")
@@ -60,8 +54,14 @@ class Like(CoreModel):
 
 
 class Picture(CoreModel):
+    # photo = models.ManyToManyField(
+    #     GameInfo,
+    #     blank=True,
+    #     null=True,
+    #     related_name="game_info_picture",
+    #     verbose_name="Зображення",
+    # )
     url_picture = models.CharField(max_length=255, verbose_name="Зображення")
-    is_active = models.BooleanField(default=False, verbose_name="Активна")
     type_picture = models.CharField(max_length=255, verbose_name="Тип зображення")
 
     def __str__(self):
