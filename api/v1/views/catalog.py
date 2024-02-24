@@ -14,11 +14,16 @@ from api.v1.schemas.catalog import (
 from api.v1.serializers.catalog import (
     CreateGameInfoDTOSerializer,
     UpdateGameInfoDTOSerializer,
+    FilterAndSortGameInfoDTOSerializer,
 )
 from api.v1.views.base import ApiBaseView
 from rest_framework.views import APIView
 
-from catalog.dto import CreateGameInfoDTO, UpdateGameInfoDTORequest
+from catalog.dto import (
+    CreateGameInfoDTO,
+    UpdateGameInfoDTORequest,
+    FilterSortGameInfoDTORequest,
+)
 from core.containers import ProjectContainer as GameInfoContainer
 from catalog.exceptions import GameInfoDoesNotExist
 
@@ -413,19 +418,180 @@ class APIAllGameInfoView(APIView, ApiBaseView):
     def get(self, request: Request):
         """Get all GameInfo"""
         game_info_interactor = GameInfoContainer.game_info_interactor()
-        list_of_game_infos = game_info_interactor.get_all_game_info()
-        serialized_game_infos = [
-            game_info.model_dump() for game_info in list_of_game_infos
+        list_of_game_info = game_info_interactor.get_all_game_info()
+        serialized_game_info = [
+            game_info.model_dump() for game_info in list_of_game_info
         ]
-        return self._response_for_successful_list_of_game_info(serialized_game_infos)
+        return self._response_for_successful_list_of_game_info(
+            message="Successful get list of all game_info", data=serialized_game_info
+        )
+
+    @swagger_auto_schema(
+        operation_description="""
+        List of game info, or with additional filtering and sorting.
+    
+        Parameters for additional updating:
+        - `uuid` (UUID): The ID of the game_info, `required`.
+        - `name_ua` (String): Ukr name for game_info, optional.
+        - `name_en` (String): Eng name for game_info, optional.
+        - `photo` (String): game_info photo, optional.
+        - `description_ua` (String): Description of game, ua, optional.
+        - `description_en` (String): Description of game, eng, optional.
+        - `is_team` (Bool): The number of the event, optional.
+        - `members` (Integer): Number of participants, optional.
+    
+        Parameters for filtering:
+        - `sort_selection` (String): Sorting field, optional.
+        - `members__gt` (Integer): The number of the event, optional.
+    
+        Parameters for filtering and sorting:
+        - `sort_selection` (String): Sorting field, optional.
+        - `members__gt` (Integer): The number of the event, optional.
+    
+    
+        Returns:
+           - 200: Returns event request data.
+                - data (list[dict[str, str]]): Processing result.
+           - 400: Error response for invalid request.   
+    
+        Example of successful processing:
+    
+          "data": [
+            {
+    
+            }
+          ]
+        """,
+        request_body=FilterAndSortGameInfoDTOSerializer,
+        responses={
+            200: openapi.Response(
+                "List of game info, or with additional filtering and sorting.",
+                list_of_game_info_response_schema,
+            ),
+            400: error_response,
+            404: error_response,
+        },
+        tags=["GameInfo"],
+    )
+    def post(self, request: Request) -> Response:
+        """List of game info, or with additional filtering and sorting"""
+        catalog_filter_sort_serializer = FilterAndSortGameInfoDTOSerializer(
+            data=request.data
+        )
+        catalog_filter_sort_serializer_is_valid = (
+            catalog_filter_sort_serializer.is_valid()
+        )
+
+        if not catalog_filter_sort_serializer_is_valid:
+            return self._create_response_for_invalid_serializers(
+                catalog_filter_sort_serializer
+            )
+
+        group_or_individual = catalog_filter_sort_serializer.validated_data.pop(
+            "group_or_individual", None
+        )
+        group_or_individual_parameter = {}
+        if group_or_individual:
+            if group_or_individual == "individual":
+                group_or_individual_parameter.update({"members": 1})
+                if catalog_filter_sort_serializer.validated_data.get("sort_selection") == "-members":
+                    catalog_filter_sort_serializer.sort_selection = None
+            else:
+                group_or_individual_parameter.update({"members__gt": 1})
+
+        catalog_filter_sort_dto = FilterSortGameInfoDTORequest(
+            **catalog_filter_sort_serializer.validated_data,
+            **group_or_individual_parameter,
+        )
+        try:
+            catalog_filter_sort_interactor = GameInfoContainer.game_info_interactor()
+            catalog_filter_sort_dto_result = (
+                catalog_filter_sort_interactor.catalog_filter_sort(catalog_filter_sort_dto)
+            )
+        except BaseException as exception:
+            return self._create_response_for_exception(exception)
+
+        catalog_result_serialized_data = [
+            game_info.model_dump() for game_info in catalog_filter_sort_dto_result
+        ]
+        return self._response_for_successful_list_of_game_info(
+            message="Successfully received an all game info, or with additional filtering and sorted",
+            data=catalog_result_serialized_data,
+        )
 
     @staticmethod
-    def _response_for_successful_list_of_game_info(game_infos_serializer_data):
+    def _response_for_successful_list_of_game_info(message, data):
         return Response(
             {
-                "status": "success",
-                "message": f"Successful get list of all game_infos",
-                "data": game_infos_serializer_data,
+                "status": "Success",
+                "message": message,
+                "data": data,
             },
             status=status.HTTP_200_OK,
         )
+
+
+# class APIGameInfoLikeView(APIView, ApiBaseView):
+#     parser_classes = (
+#         parsers.FormParser,
+#         parsers.MultiPartParser,
+#         parsers.FileUploadParser,
+#     )
+#
+#     @swagger_auto_schema(
+#         operation_description="""
+#         Get game_info detailed info by UUID
+#
+#         Parameters:
+#         - `uuid` (UUID): The ID of the game info, required.
+#
+#         Returns:
+#            - 200: Returns event request data.
+#                 - data (dict[str, str]): Processing result.
+#            - 400: Error response for invalid request.
+#
+#         Example of successful processing:
+#
+#         {
+#           "status": "success",
+#           "message": "Successful get game_info information",
+#           "data": {
+#             "name_ua": "133",
+#             "name_en": "12323123",
+#             "photo": "./cloud_img/game_info/12323123\\12323123_11lab_price.png",
+#             "description_ua": "21313",
+#             "description_en": "12",
+#             "is_team": false,
+#             "is_active": false,
+#             "members": 0,
+#             "uuid": "d80de9cf-3516-450b-9173-03476d8270e6",
+#             "like__number": 0
+#           }
+#         }
+#         """,
+#         manual_parameters=[
+#             openapi.Parameter(
+#                 "uuid",
+#                 in_=openapi.IN_PATH,
+#                 type=openapi.TYPE_STRING,
+#                 format=openapi.FORMAT_UUID,
+#             )
+#         ],
+#         responses={
+#             201: openapi.Response(
+#                 "Get game_info information by UUID", created_game_info_response_schema
+#             ),
+#             400: error_response,
+#         },
+#         tags=["GameInfo"],
+#     )
+#     def get(self, request: Request, uuid: UUID):
+#         game_info_interactor = GameInfoContainer.game_info_interactor()
+#
+#         try:
+#             game_info_dto = game_info_interactor.get_game_info_by_uuid(uuid)
+#         except GameInfoDoesNotExist as exception:
+#             return self._create_response_not_found(exception)
+#
+#         game_info_serialized_data = game_info_dto.model_dump()
+#         return self._create_response_for_successful_get_game_info(game_info_serialized_data)

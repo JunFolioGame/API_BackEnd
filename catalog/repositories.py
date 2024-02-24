@@ -7,6 +7,7 @@ from catalog.dto import (
     GameInfoDTOResponse,
     UpdateGameInfoDTORequest,
     CreateGameInfoDTO,
+    FilterSortGameInfoDTORequest,
 )
 from catalog.exceptions import GameInfoDoesNotExist
 from catalog.models import GameInfo, Like
@@ -66,13 +67,33 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
             for game_info_obj in game_info
         ]
 
+    def catalog_filter_sort(
+        self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
+    ) -> list[GameInfoDTOResponse]:
+        filtered_param_without_none = {
+            k: v
+            for k, v in game_info_filter_sort_dto.model_dump().items()
+            if (v is not None) and (k != "sort_selection")
+        }
+        GameInfo.objects.filter(members__gt=10)
+        game_info_list_filter = GameInfo.objects.filter(**filtered_param_without_none)
+        if game_info_filter_sort_dto.sort_selection:
+            game_info_list_filter = game_info_list_filter.order_by(
+                game_info_filter_sort_dto.sort_selection
+            )
+
+        return [
+            self._instance_model_to_dto_model(
+                dto_model=GameInfoDTOResponse, instance_model=game_info_obj
+            )
+            for game_info_obj in game_info_list_filter
+        ]
+
     # def _game_info_to_dto(self, game_info: GameInfo) -> GameInfoDTOResponse:
     #     return GameInfoDTOResponse(
     #         uuid=game_info.uuid,
     #         name_ua=game_info.name_ua,
     #         name_en=game_info.name_en,
-    #         role_ua=game_info.role_ua,
-    #         photo=game_info.photo,
     #         is_active=game_info.is_active,
     #     )   переробив на універсальну функцію
 

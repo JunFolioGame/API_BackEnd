@@ -1,7 +1,12 @@
 from abc import abstractmethod, ABCMeta
 from uuid import UUID
 
-from catalog.dto import GameInfoDTOResponse, UpdateGameInfoDTORequest, CreateGameInfoDTO
+from catalog.dto import (
+    GameInfoDTOResponse,
+    UpdateGameInfoDTORequest,
+    CreateGameInfoDTO,
+    FilterSortGameInfoDTORequest,
+)
 
 
 class GameInfoServiceInterface(metaclass=ABCMeta):
@@ -26,3 +31,9 @@ class GameInfoServiceInterface(metaclass=ABCMeta):
     @abstractmethod
     def get_all_game_info(self) -> list[GameInfoDTOResponse]:
         pass
+
+    @abstractmethod
+    def catalog_filter_sort(
+        self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
+    ) -> list[GameInfoDTOResponse]:
+        ...

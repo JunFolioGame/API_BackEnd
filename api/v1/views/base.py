@@ -57,7 +57,7 @@ class ApiBaseView:
 
     def _create_response_for_exception(self, exception):
         return Response(
-            {"status": "failed", "message": str(exception.message)},
+            {"status": "failed", "message": str(exception)},
             status=status.HTTP_400_BAD_REQUEST,
         )
 

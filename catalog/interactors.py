@@ -2,7 +2,12 @@ from typing import List
 from uuid import UUID
 
 from additional_service.services_interfaces import AdditionalServiceInterface
-from catalog.dto import CreateGameInfoDTO, GameInfoDTOResponse, UpdateGameInfoDTORequest
+from catalog.dto import (
+    CreateGameInfoDTO,
+    GameInfoDTOResponse,
+    UpdateGameInfoDTORequest,
+    FilterSortGameInfoDTORequest,
+)
 from catalog.services_interfaces import GameInfoServiceInterface
 
 
@@ -58,3 +63,8 @@ class GameInfoInteractor:
 
     def get_all_game_info(self) -> List[GameInfoDTOResponse]:
         return self.game_info_service.get_all_game_info()
+
+    def catalog_filter_sort(
+        self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
+    ) -> list[GameInfoDTOResponse]:
+        return self.game_info_service.catalog_filter_sort(game_info_filter_sort_dto)

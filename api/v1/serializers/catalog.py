@@ -22,7 +22,7 @@ class CreateGameInfoDTOSerializer(serializers.Serializer):
         return value
 
 
-class UpdateGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
+class FilterGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
     name_ua = serializers.CharField(max_length=50, required=False, allow_null=True)
     name_en = serializers.CharField(max_length=50, required=False, allow_null=True)
     description_ua = serializers.CharField(
@@ -32,4 +32,44 @@ class UpdateGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
         max_length=50, required=False, allow_null=True
     )
     photo = serializers.CharField(required=False, allow_null=True)
+    photo_jpeg = serializers.HiddenField(required=False, allow_null=True, default=None)
+    is_team = serializers.BooleanField(required=False, allow_null=True, default=None)
+    is_active = serializers.BooleanField(required=False, allow_null=True, default=None)
+
+
+
+class UpdateGameInfoDTOSerializer(FilterGameInfoDTOSerializer):
     photo_jpeg = serializers.ImageField(required=False, allow_null=True)
+
+
+class FilterAndSortGameInfoDTOSerializer(FilterGameInfoDTOSerializer):
+    sort_selection = serializers.ChoiceField(
+        choices=["popularity", "newness", "member"],
+        required=False,
+        default="popularity",
+    )
+    group_or_individual = serializers.ChoiceField(
+        choices=["group", "individual"], required=False
+    )
+
+    def validate_sort_selection(self, value):
+        match value:
+            case "popularity":
+                return "-like__number"
+            case "newness":
+                return "-create_at"
+            case "member":
+                return "-members"
+            case _:
+                raise ValidationError(f"Невідомий тип сортування: {value}")
+
+    # def validate_group_or_individual(self, value):
+    #     match value:
+    #         case "group":
+    #             return ""
+    #         case "newness":
+    #             return "created_at"
+    #         case "member":
+    #             return "members"
+    #         case _:
+    #             raise ValidationError(f"Невідомий тип сортування: {value}")

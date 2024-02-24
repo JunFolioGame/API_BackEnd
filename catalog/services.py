@@ -1,6 +1,11 @@
 from uuid import UUID
 
-from catalog.dto import GameInfoDTOResponse, CreateGameInfoDTO, UpdateGameInfoDTORequest
+from catalog.dto import (
+    GameInfoDTOResponse,
+    CreateGameInfoDTO,
+    UpdateGameInfoDTORequest,
+    FilterSortGameInfoDTORequest,
+)
 from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
 from catalog.services_interfaces import GameInfoServiceInterface
 
@@ -25,3 +30,8 @@ class GameInfoService(GameInfoServiceInterface):
 
     def get_all_game_info(self) -> list[GameInfoDTOResponse]:
         return self.repository.get_all_game_info()
+
+    def catalog_filter_sort(
+        self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
+    ) -> list[GameInfoDTOResponse]:
+        return self.repository.catalog_filter_sort(game_info_filter_sort_dto)
