@@ -32,13 +32,6 @@ class AdditionalService(AdditionalServiceInterface):
         return image_path
 
     def delete_file_from_s3(self, photo_url: str) -> None:
-        # try:
-        #     os.remove(photo_url)
-        #     print("Зображення видалено!")
-        # except FileNotFoundError:
-        #     print("Зображення для видалення не знайдено!")
-
-
         try:
             if os.path.isfile(photo_url):
                 os.remove(photo_url)

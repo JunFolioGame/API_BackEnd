@@ -62,14 +62,3 @@ class FilterAndSortGameInfoDTOSerializer(FilterGameInfoDTOSerializer):
                 return "-members"
             case _:
                 raise ValidationError(f"Невідомий тип сортування: {value}")
-
-    # def validate_group_or_individual(self, value):
-    #     match value:
-    #         case "group":
-    #             return ""
-    #         case "newness":
-    #             return "created_at"
-    #         case "member":
-    #             return "members"
-    #         case _:
-    #             raise ValidationError(f"Невідомий тип сортування: {value}")

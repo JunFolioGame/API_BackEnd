@@ -66,8 +66,6 @@ def update_like_number(sender, instance, **kwargs):
 class Picture(CoreModel):
     # photo = models.ManyToManyField(
     #     GameInfo,
-    #     blank=True,
-    #     null=True,
     #     related_name="game_info_picture",
     #     verbose_name="Зображення",
     # )
