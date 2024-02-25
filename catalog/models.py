@@ -47,10 +47,7 @@ class Like(CoreModel):
     number = models.IntegerField(default=0, verbose_name="Популярність")
     list_vote_user_id = models.ManyToManyField(
         Player,
-        # blank=True,
-        # null=True,
         verbose_name="Список користувачів",
-        # related_name="like_list_vote_user_id",
     )
 
     def update_number(self):
