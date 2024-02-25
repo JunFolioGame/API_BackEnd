@@ -1,6 +1,10 @@
 from uuid import uuid4
 
 from django.db import models
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
+
+from players.models import Player
 
 
 class CoreModel(models.Model):
@@ -37,17 +41,26 @@ class GameInfo(CoreModel):
 
 
 class Like(CoreModel):
-    gameinfo = models.OneToOneField(GameInfo, on_delete=models.CASCADE, verbose_name="карточка гри")
-    number = models.IntegerField(default=0, verbose_name="Популярність")
-    list_vote_user_id = models.IntegerField(  # models.ManyToManyField(
-        default=0,
-        #     "users.User",
-        #     unique=True,
-        #     blank=True,
-        #     null=True,
-        verbose_name="Список користувачів",
-        #related_name="like_list_vote_user_id",
+    gameinfo = models.OneToOneField(
+        GameInfo, on_delete=models.CASCADE, verbose_name="карточка гри"
     )
+    number = models.IntegerField(default=0, verbose_name="Популярність")
+    list_vote_user_id = models.ManyToManyField(
+        Player,
+        # blank=True,
+        # null=True,
+        verbose_name="Список користувачів",
+        # related_name="like_list_vote_user_id",
+    )
+
+    def update_number(self):
+        self.number = self.list_vote_user_id.count()
+        self.save()
+
+
+@receiver(m2m_changed, sender=Like.list_vote_user_id.through)
+def update_like_number(sender, instance, **kwargs):
+    instance.update_number()
 
     def __str__(self):
         return f"id: {self.uuid} likes: {self.number}"

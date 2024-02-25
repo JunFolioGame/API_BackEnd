@@ -68,3 +68,10 @@ class GameInfoInteractor:
         self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
     ) -> list[GameInfoDTOResponse]:
         return self.game_info_service.catalog_filter_sort(game_info_filter_sort_dto)
+
+    def set_like_game_info_by_uuid(
+        self, game_info_uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse:
+        return self.game_info_service.set_like_game_info_by_uuid(
+            game_info_uuid, player_uuid
+        )

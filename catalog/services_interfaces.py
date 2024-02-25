@@ -37,3 +37,9 @@ class GameInfoServiceInterface(metaclass=ABCMeta):
         self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
     ) -> list[GameInfoDTOResponse]:
         ...
+
+    @abstractmethod
+    def set_like_game_info_by_uuid(
+        self, uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse:
+        ...

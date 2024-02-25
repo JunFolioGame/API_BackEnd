@@ -12,6 +12,7 @@ from catalog.dto import (
 from catalog.exceptions import GameInfoDoesNotExist
 from catalog.models import GameInfo, Like
 from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
+from players.models import Player
 
 
 class GameInfoRepository(AbstractGameInfoRepositoryInterface):
@@ -88,6 +89,17 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
             )
             for game_info_obj in game_info_list_filter
         ]
+
+    def set_like_game_info_by_uuid(
+        self, game_info_uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse:
+        game_info = get_object_or_None(GameInfo, uuid=game_info_uuid)
+        if not game_info:
+            raise GameInfoDoesNotExist()
+        game_info.like.list_vote_user_id.add(player_uuid)
+        return self._instance_model_to_dto_model(
+            dto_model=GameInfoDTOResponse, instance_model=game_info
+        )
 
     # def _game_info_to_dto(self, game_info: GameInfo) -> GameInfoDTOResponse:
     #     return GameInfoDTOResponse(

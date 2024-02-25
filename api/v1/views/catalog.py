@@ -6,6 +6,7 @@ from rest_framework import status, parsers
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from api.v1.decorators.uuid_required import uuid_required
 from api.v1.schemas.base_schema import error_response, successful_response_without_data
 from api.v1.schemas.catalog import (
     created_game_info_response_schema,
@@ -440,13 +441,10 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         - `is_team` (Bool): The number of the event, optional.
         - `members` (Integer): Number of participants, optional.
     
-        Parameters for filtering:
-        - `sort_selection` (String): Sorting field, optional.
-        - `members__gt` (Integer): The number of the event, optional.
     
         Parameters for filtering and sorting:
-        - `sort_selection` (String): Sorting field, optional.
-        - `members__gt` (Integer): The number of the event, optional.
+        - `sort_selection` (String): Sorting field, optional. Available values : popularity, newness, member
+        - `members__gt` (Integer): The number of the event, optional. Available values : group, individual
     
     
         Returns:
@@ -456,11 +454,48 @@ class APIAllGameInfoView(APIView, ApiBaseView):
     
         Example of successful processing:
     
+        {
+          "status": "Success",
+          "message": "Successfully received an all game info, or with additional filtering and sorted",
           "data": [
             {
-    
+              "name_ua": "1212",
+              "name_en": "12131",
+              "photo": "./cloud_img/game_info/12131\\12131_photo1701504269.jpeg",
+              "description_ua": "12",
+              "description_en": "12",
+              "is_team": false,
+              "is_active": false,
+              "members": 2,
+              "uuid": "5bce6e2d-2f51-4df1-926b-d4747d0d9ecc",
+              "like__number": 100
+            },
+            {
+              "name_ua": "фв",
+              "name_en": "фвф",
+              "photo": "./cloud_img/game_info/фвф\\фвф_photo1701504269.jpeg",
+              "description_ua": "12",
+              "description_en": "12",
+              "is_team": false,
+              "is_active": false,
+              "members": 3,
+              "uuid": "522f74ea-5093-45eb-bd9d-2d30b843c8f8",
+              "like__number": 2
+            },
+            {
+              "name_ua": "awda",
+              "name_en": "wd",
+              "photo": "./cloud_img/game_info/wd\\wd_11lab_price.png",
+              "description_ua": "ac",
+              "description_en": "asc",
+              "is_team": false,
+              "is_active": false,
+              "members": 1,
+              "uuid": "87a8af4d-40e3-4c0d-b8af-e504a23faaa0",
+              "like__number": 1
             }
           ]
+        }
         """,
         request_body=FilterAndSortGameInfoDTOSerializer,
         responses={
@@ -494,7 +529,10 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         if group_or_individual:
             if group_or_individual == "individual":
                 group_or_individual_parameter.update({"members": 1})
-                if catalog_filter_sort_serializer.validated_data.get("sort_selection") == "-members":
+                if (
+                    catalog_filter_sort_serializer.validated_data.get("sort_selection")
+                    == "-members"
+                ):
                     catalog_filter_sort_serializer.sort_selection = None
             else:
                 group_or_individual_parameter.update({"members__gt": 1})
@@ -506,7 +544,9 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         try:
             catalog_filter_sort_interactor = GameInfoContainer.game_info_interactor()
             catalog_filter_sort_dto_result = (
-                catalog_filter_sort_interactor.catalog_filter_sort(catalog_filter_sort_dto)
+                catalog_filter_sort_interactor.catalog_filter_sort(
+                    catalog_filter_sort_dto
+                )
             )
         except BaseException as exception:
             return self._create_response_for_exception(exception)
@@ -531,67 +571,85 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         )
 
 
-# class APIGameInfoLikeView(APIView, ApiBaseView):
-#     parser_classes = (
-#         parsers.FormParser,
-#         parsers.MultiPartParser,
-#         parsers.FileUploadParser,
-#     )
-#
-#     @swagger_auto_schema(
-#         operation_description="""
-#         Get game_info detailed info by UUID
-#
-#         Parameters:
-#         - `uuid` (UUID): The ID of the game info, required.
-#
-#         Returns:
-#            - 200: Returns event request data.
-#                 - data (dict[str, str]): Processing result.
-#            - 400: Error response for invalid request.
-#
-#         Example of successful processing:
-#
-#         {
-#           "status": "success",
-#           "message": "Successful get game_info information",
-#           "data": {
-#             "name_ua": "133",
-#             "name_en": "12323123",
-#             "photo": "./cloud_img/game_info/12323123\\12323123_11lab_price.png",
-#             "description_ua": "21313",
-#             "description_en": "12",
-#             "is_team": false,
-#             "is_active": false,
-#             "members": 0,
-#             "uuid": "d80de9cf-3516-450b-9173-03476d8270e6",
-#             "like__number": 0
-#           }
-#         }
-#         """,
-#         manual_parameters=[
-#             openapi.Parameter(
-#                 "uuid",
-#                 in_=openapi.IN_PATH,
-#                 type=openapi.TYPE_STRING,
-#                 format=openapi.FORMAT_UUID,
-#             )
-#         ],
-#         responses={
-#             201: openapi.Response(
-#                 "Get game_info information by UUID", created_game_info_response_schema
-#             ),
-#             400: error_response,
-#         },
-#         tags=["GameInfo"],
-#     )
-#     def get(self, request: Request, uuid: UUID):
-#         game_info_interactor = GameInfoContainer.game_info_interactor()
-#
-#         try:
-#             game_info_dto = game_info_interactor.get_game_info_by_uuid(uuid)
-#         except GameInfoDoesNotExist as exception:
-#             return self._create_response_not_found(exception)
-#
-#         game_info_serialized_data = game_info_dto.model_dump()
-#         return self._create_response_for_successful_get_game_info(game_info_serialized_data)
+class APIGameInfoLikeView(APIView, ApiBaseView):
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.FileUploadParser,
+    )
+
+    @swagger_auto_schema(
+        operation_description="""
+        The operation with the addition of like by UUID game_info
+
+        Parameters:
+        - `uuid` (UUID): The ID of the game info, required.
+
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.
+
+        Example of successful processing:
+
+        {
+          "status": "success",
+          "message": "The operation with the addition of like was successfully completed",
+          "data": {
+            "name_ua": "133",
+            "name_en": "12323123",
+            "photo": "./cloud_img/game_info/12323123\\12323123_11lab_price.png",
+            "description_ua": "21313",
+            "description_en": "12",
+            "is_team": false,
+            "is_active": false,
+            "members": 0,
+            "uuid": "d80de9cf-3516-450b-9173-03476d8270e6",
+            "like__number": 1
+          }
+        }
+        """,
+        manual_parameters=[
+            openapi.Parameter(
+                "uuid",
+                in_=openapi.IN_PATH,
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_UUID,
+            )
+        ],
+        responses={
+            201: openapi.Response(
+                "The operation with the addition of like by UUID game_info", created_game_info_response_schema
+            ),
+            400: error_response,
+        },
+        tags=["GameInfo"],
+    )
+    @uuid_required
+    def get(self, request: Request, uuid: UUID):
+        game_info_interactor = GameInfoContainer.game_info_interactor()
+        player_uuid = request.COOKIES.get("PLAYER_UUID")
+
+        try:
+            game_info_dto = game_info_interactor.set_like_game_info_by_uuid(
+                uuid, player_uuid
+            )
+        except GameInfoDoesNotExist as exception:
+            return self._create_response_not_found(exception)
+
+        game_info_serialized_data = game_info_dto.model_dump()
+        return self._create_response_for_successful_get_game_info(
+            message="The operation with the addition of like was successfully completed",
+            data=game_info_serialized_data
+        )
+
+    @staticmethod
+    def _create_response_for_successful_get_game_info(message, data):
+        return Response(
+            {
+                "status": "Success",
+                "message": message,
+                "data": data,
+            },
+            status=status.HTTP_200_OK,
+        )
