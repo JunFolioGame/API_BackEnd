@@ -1,6 +1,9 @@
 from dependency_injector import containers, providers
 
 from additional_service.upload_delete_file import AdditionalService
+from catalog.interactors import GameInfoInteractor
+from catalog.repositories import GameInfoRepository
+from catalog.services import GameInfoService
 from developers.interactors import DeveloperInteractor
 from developers.repositories import DeveloperRepository
 from developers.services import DeveloperService
@@ -16,6 +19,7 @@ class AdditionalServiceContainer(containers.DeclarativeContainer):
 class RepositoryContainer(containers.DeclarativeContainer):
     player_repository = providers.Factory(PlayerRepository)
     developer_repository = providers.Factory(DeveloperRepository)
+    game_info_repository = providers.Factory(GameInfoRepository)
 
 
 class ServiceContainer(containers.DeclarativeContainer):
@@ -24,6 +28,9 @@ class ServiceContainer(containers.DeclarativeContainer):
     )
     developer_service = providers.Factory(
         DeveloperService, repository=RepositoryContainer.developer_repository
+    )
+    game_info_service = providers.Factory(
+        GameInfoService, repository=RepositoryContainer.game_info_repository
     )
 
 
@@ -34,5 +41,10 @@ class ProjectContainer(containers.DeclarativeContainer):
     developer_interactor: providers.Provider[DeveloperInteractor] = providers.Factory(
         DeveloperInteractor,
         developer_service=ServiceContainer.developer_service,
+        additional_service=AdditionalServiceContainer.additional_service,
+    )
+    game_info_interactor: providers.Provider[GameInfoInteractor] = providers.Factory(
+        GameInfoInteractor,
+        game_info_service=ServiceContainer.game_info_service,
         additional_service=AdditionalServiceContainer.additional_service,
     )

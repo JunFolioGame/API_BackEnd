@@ -33,7 +33,18 @@ class AdditionalService(AdditionalServiceInterface):
 
     def delete_file_from_s3(self, photo_url: str) -> None:
         try:
-            os.remove(photo_url)
-            print("Зображення видалено!")
+            if os.path.isfile(photo_url):
+                os.remove(photo_url)
+                print(f"Файл {photo_url} видалено!")
+                folder_path = os.path.dirname(photo_url)
+                while folder_path != "" and folder_path != "'./cloud_img'":
+                    if not os.listdir(folder_path):
+                        os.rmdir(folder_path)
+                        print(f"Папка {folder_path} видалена!")
+                        folder_path = os.path.dirname(folder_path)
+                    else:
+                        break
+            else:
+                print("Файл або папку для видалення не знайдено!")
         except FileNotFoundError:
-            print("Зображення для видалення не знайдено!")
+            print("Файл або папку для видалення не знайдено!")

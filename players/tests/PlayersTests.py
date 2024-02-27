@@ -29,7 +29,7 @@ class PlayerTests(APITestCase):
 
         data = response.data
         self.assertEqual(data["status"], "failed")
-        self.assertEqual(data["message"], "111 is not a valid UUID")
+        self.assertEqual(data["message"], "['111 is not a valid UUID']")
 
     def test_player_retrieve_wrong_player_dont_exist(self):
         while True:

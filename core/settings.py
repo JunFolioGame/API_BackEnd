@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # user app
     "players.apps.PlayersConfig",
     "developers.apps.DevelopersConfig",
+    "catalog.apps.CatalogConfig",
     "api.v1.apps.ApiConfig",
 ]
 
@@ -221,3 +222,5 @@ REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
 
 CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
+
+DEFAULT_CHARSET = 'utf-8'
