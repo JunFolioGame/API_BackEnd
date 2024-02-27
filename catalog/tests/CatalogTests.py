@@ -129,5 +129,5 @@ class CatalogTests(APITestCase):
     def test_get_all_game_info_success(self):
         response = self.client.get("/api/v1/game_info/all/")
         assert response.status_code == 200
-        assert response.data["status"] == "success"
-        assert response.data["message"] == "Successful get list of all game_infos"
+        assert response.data["status"] == "Success"
+        assert response.data["message"] == "Successful get list of all game_info"

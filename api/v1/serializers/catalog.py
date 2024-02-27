@@ -7,6 +7,7 @@ class CreateGameInfoDTOSerializer(serializers.Serializer):
     name_en = serializers.CharField(max_length=50)
     description_ua = serializers.CharField(max_length=50)
     description_en = serializers.CharField(max_length=50)
+    members = serializers.IntegerField()
     photo_jpeg = serializers.ImageField()
     is_team = serializers.BooleanField(required=False, allow_null=True, default=False)
     is_active = serializers.BooleanField(required=False, allow_null=True, default=False)
@@ -31,6 +32,7 @@ class FilterGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
     description_en = serializers.CharField(
         max_length=50, required=False, allow_null=True
     )
+    members = serializers.IntegerField(required=False, allow_null=True)
     photo = serializers.CharField(required=False, allow_null=True)
     photo_jpeg = serializers.HiddenField(required=False, allow_null=True, default=None)
     is_team = serializers.BooleanField(required=False, allow_null=True, default=None)
