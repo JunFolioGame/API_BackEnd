@@ -1,8 +1,7 @@
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, StringConstraints
-from typing_extensions import Annotated
+from pydantic import BaseModel
 
 
 class CreateGameInfoDTO(BaseModel):
