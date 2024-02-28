@@ -20,6 +20,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
+# import logging
+# import os
+#
+# # Визначте шлях до каталогу логів
+# log_dir = os.path.join(BASE_DIR, 'core', 'log')
+# if not os.path.exists(log_dir):
+#     os.makedirs(log_dir)
+#
+# # Налаштування об'єктів логування
+# file_log = logging.FileHandler(os.path.join(log_dir, "api_backend.log"))
+# console_out = logging.StreamHandler()
+#
+# # Налаштування форматування логування
+# logging.basicConfig(
+#     handlers=(file_log, console_out),
+#     level=logging.INFO,
+#     datefmt="%d.%m.%Y %H:%M:%S",
+#     format="[%(asctime)s loglevel=%(levelname)-6s]:  %(message)s ||| call_trace=%(pathname)s L%(lineno)-4d ",
+# )
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -223,4 +244,4 @@ REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
 CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 
-DEFAULT_CHARSET = 'utf-8'
+DEFAULT_CHARSET = "utf-8"
