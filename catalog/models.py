@@ -37,7 +37,7 @@ class GameInfo(CoreModel):
 
     class Meta:
         verbose_name = "Інформація про гру"
-        verbose_name_plural = "Інформація про Ігри"
+        verbose_name_plural = "Інформація про ігри"
 
 
 class Like(CoreModel):
