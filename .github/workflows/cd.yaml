@@ -1,0 +1,26 @@
+name: CD_JunFolio
+
+on:
+  pull_request:
+    branches:
+      - dev
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_SSH_HOST }}
+          username: ${{ secrets.VPS_SSH_USERNAME }}
+          key: ${{ secrets.VPS_SSH_SECRET }}
+          passphrase: ${{ secrets.VPS_SSH_PASSPHRASE }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            eval "$(ssh-agent)"
+            ssh-add /home/ubuntu/.ssh/id_rsa
+            cd ${{  secrets.PROJECT_PATH }}
+            git pull origin dev
+            docker-compose rm -sf
+            docker-compose -f docker-compose_dev.yml up --build -d
+            docker image prune -af
