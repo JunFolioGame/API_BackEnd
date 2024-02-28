@@ -11,12 +11,12 @@ from developers.repositories import DeveloperRepository
 
 
 class DevelopersTests(APITestCase):
-
     def setUp(self):
-
         self.url = reverse("api:developers:developers")
 
-        with open(os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb") as photo_file:
+        with open(
+            os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
+        ) as photo_file:
             self.photo_jpeg = SimpleUploadedFile(
                 "sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
             )
@@ -43,7 +43,6 @@ class DevelopersTests(APITestCase):
     # -------------------------------------LIST DEVELOPERS------------------------------------------
 
     def test_developer_list_success(self):
-
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -63,7 +62,6 @@ class DevelopersTests(APITestCase):
     # -------------------------------------RETRIEVE DEVELOPER---------------------------------------
 
     def test_developer_retrieve_wrong_not_found(self):
-
         while True:
             random_uuid = uuid4()
             if random_uuid != self.developer_uuid:
@@ -77,7 +75,6 @@ class DevelopersTests(APITestCase):
         self.assertEqual(data["message"], "Developer doesn't exist")
 
     def test_developer_retrieve_success(self):
-
         response = self.client.get(self.url + str(self.developer_uuid))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -95,7 +92,6 @@ class DevelopersTests(APITestCase):
     # --------------------------------------DESTROY DEVELOPER---------------------------------------
 
     def test_developer_destroy_wrong_not_found(self):
-
         while True:
             random_uuid = uuid4()
             if random_uuid != self.developer_uuid:
@@ -109,7 +105,6 @@ class DevelopersTests(APITestCase):
         self.assertEqual(data["message"], "Developer doesn't exist")
 
     def test_developer_destroy_success(self):
-
         response = self.client.delete(self.url + str(self.developer_uuid))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.data
@@ -120,7 +115,6 @@ class DevelopersTests(APITestCase):
     # --------------------------------------UPDATE DEVELOPER----------------------------------------
 
     def test_developer_update_wrong_not_found(self):
-
         while True:
             random_uuid = uuid4()
             if random_uuid != self.developer_uuid:
@@ -134,9 +128,10 @@ class DevelopersTests(APITestCase):
         self.assertEqual(data["message"], "Developer doesn't exist")
 
     def test_developer_update_wrong_bad_photo(self):
-
         update_data = {"photo_jpeg": self.wrong_photo_jpeg}
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         data = response.data
@@ -145,13 +140,15 @@ class DevelopersTests(APITestCase):
         # Треба якусь нормальну помилку для завеликого файлу зробити а не строку
         self.assertEqual(
             data["message"],
-            "{'photo_jpeg': [ErrorDetail(string='Розмір файлу перевищує максимально допустимий розмір 10485760 байт.', code='invalid')]}",
+            "{'photo_jpeg': [ErrorDetail(string='Розмір файлу перевищує максимально допустимий розмір "
+            "10485760 байт.', code='invalid')]}",
         )
 
     def test_developer_update_photo_jpeg_success(self):
-
         update_data = {"photo_jpeg": self.photo_jpeg}
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -168,9 +165,10 @@ class DevelopersTests(APITestCase):
         self.client.delete(self.url + str(user["developer_uuid"]))
 
     def test_developer_update_empty_success(self):
-
         update_data = {}
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -186,11 +184,12 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
     def test_developer_update_name_ua_success(self):
-
         update_data = {
             "name_ua": "Петро",
         }
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -206,11 +205,12 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
     def test_developer_update_name_en_success(self):
-
         update_data = {
             "name_en": "Petro",
         }
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -226,11 +226,12 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
     def test_developer_update_role_ua_success(self):
-
         update_data = {
             "role_ua": "Власник",
         }
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -246,11 +247,12 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
     def test_developer_update_photo_success(self):
-
         update_data = {
             "photo": "Фото 2",
         }
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -266,11 +268,12 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
     def test_developer_update_is_active_success(self):
-
         update_data = {
             "is_active": False,
         }
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -286,7 +289,6 @@ class DevelopersTests(APITestCase):
         self.assertEqual(user["developer_uuid"], self.developer_uuid)
 
     def test_developer_update_change_all_success(self):
-
         update_data = {
             "name_ua": "Петро",
             "name_en": "Petro",
@@ -294,7 +296,9 @@ class DevelopersTests(APITestCase):
             "photo": "Фото 2",
             "is_active": False,
         }
-        response = self.client.put(self.url + str(self.developer_uuid), data=update_data)
+        response = self.client.put(
+            self.url + str(self.developer_uuid), data=update_data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -313,14 +317,12 @@ class DevelopersTests(APITestCase):
 
     # Для всіх required треба якусь нормальну помилку зробити а не строку
     def test_developer_create_wrong_empty(self):
-
         create_data = {}
         response = self.client.post(self.url, data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
     def test_developer_create_wrong_name_ua_required(self):
-
         create_data = {
             "name_en": "test_2",
             "role_ua": "Власник",
@@ -337,7 +339,6 @@ class DevelopersTests(APITestCase):
         )
 
     def test_developer_create_wrong_name_en_required(self):
-
         create_data = {
             "name_ua": "тест_2",
             "role_ua": "Власник",
@@ -354,7 +355,6 @@ class DevelopersTests(APITestCase):
         )
 
     def test_developer_create_wrong_role_ua_required(self):
-
         create_data = {
             "name_ua": "тест_2",
             "name_en": "test_2",
@@ -371,7 +371,6 @@ class DevelopersTests(APITestCase):
         )
 
     def test_developer_create_wrong_photo_jpeg_required(self):
-
         create_data = {
             "name_ua": "тест_2",
             "name_en": "test_2",
@@ -388,7 +387,6 @@ class DevelopersTests(APITestCase):
         )
 
     def test_developer_create_wrong_bad_photo(self):
-
         create_data = {
             "name_ua": "тест_2",
             "name_en": "test_2",
@@ -403,11 +401,11 @@ class DevelopersTests(APITestCase):
         self.assertEqual(data["status"], "failed")
         self.assertEqual(
             data["message"],
-            "{'photo_jpeg': [ErrorDetail(string='Розмір файлу перевищує максимально допустимий розмір 10485760 байт.', code='invalid')]}",
+            "{'photo_jpeg': [ErrorDetail(string='Розмір файлу перевищує максимально допустимий розмір "
+            "10485760 байт.', code='invalid')]}",
         )
 
     def test_developer_create_success(self):
-
         create_data = {
             "name_ua": "тест_2",
             "name_en": "test_2",

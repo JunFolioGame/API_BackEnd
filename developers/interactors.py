@@ -17,7 +17,9 @@ class DeveloperInteractor:
         self.developer_service = developer_service
         self.additional_service = additional_service
 
-    def create_developer(self, developer_dto: CreateDeveloperDTO, bytesio_file) -> DeveloperDTO:
+    def create_developer(
+        self, developer_dto: CreateDeveloperDTO, bytesio_file
+    ) -> DeveloperDTO:
         """Create new developer"""
         if bytesio_file:
             image_path = self.additional_service.upload_file_to_s3(
