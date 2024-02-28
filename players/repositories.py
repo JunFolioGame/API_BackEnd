@@ -10,7 +10,6 @@ from players.repository_interfaces import AbstractPlayerRepositoryInterface
 
 
 class PlayerRepository(AbstractPlayerRepositoryInterface):
-
     def create_player(self, player: CreatePlayerDTO) -> PlayerDTO:
         player = Player.objects.create(
             api_adress=player.api_adress, browser_info=player.browser_info
