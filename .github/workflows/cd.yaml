@@ -14,11 +14,10 @@ jobs:
           host: ${{ secrets.VPS_SSH_HOST }}
           username: ${{ secrets.VPS_SSH_USERNAME }}
           key: ${{ secrets.VPS_SSH_SECRET }}
-          passphrase: ${{ secrets.VPS_SSH_PASSPHRASE }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             eval "$(ssh-agent)"
-            ssh-add /home/ubuntu/.ssh/id_rsa
+            ssh-add /home/ubuntu/.ssh/github_action_rca
             cd ${{  secrets.PROJECT_PATH }}
             git pull origin dev
             docker-compose rm -sf
