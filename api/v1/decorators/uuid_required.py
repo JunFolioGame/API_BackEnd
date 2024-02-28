@@ -18,7 +18,9 @@ def uuid_required(func):
                 )
             except PlayerDoesNotExist:
                 player = interactor.create_player(
-                    player=CreatePlayerDTO(api_adress=api_adress, browser_info=browser_info)
+                    player=CreatePlayerDTO(
+                        api_adress=api_adress, browser_info=browser_info
+                    )
                 )
             finally:
                 player_uuid = player.player_uuid

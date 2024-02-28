@@ -12,7 +12,6 @@ from catalog.dto import (
 from catalog.exceptions import GameInfoDoesNotExist
 from catalog.models import GameInfo, Like
 from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
-from players.models import Player
 
 
 class GameInfoRepository(AbstractGameInfoRepositoryInterface):
@@ -53,7 +52,8 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
             raise GameInfoDoesNotExist()
         photo_list = list(game_info_objs.values_list("photo", flat=True).distinct())
         # # Отримати значення поля param_2 зі зв'язаної моделі MyModel2
-        # parametr_2_values = MyModel.objects.filter(parametr_1=1).values_list("parametr_2__param_2", flat=True)
+        # parametr_2_values = MyModel.objects.filter(parametr_1=1).\
+        # values_list("parametr_2__param_2", flat=True)
 
         _, result_of_delete_operation = game_info_objs.delete()
         result_of_delete_operation["photo_list"] = photo_list

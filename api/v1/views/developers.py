@@ -92,7 +92,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
 
         try:
             updated_developer = developer_interactor.update_developer_by_uuid(
-                developer_dto, bytesio_file = request.data.get("photo_jpeg", None)
+                developer_dto, bytesio_file=request.data.get("photo_jpeg", None)
             )
         except DeveloperDoesNotExist as exception:
             return self._create_response_not_found(exception)
@@ -129,7 +129,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful get developer information",
+                "message": "Successful get developer information",
                 "data": developer_serializer_data,
             },
             status=status.HTTP_200_OK,
@@ -140,7 +140,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful update developer information",
+                "message": "Successful update developer information",
                 "data": developer_serializer_data,
             },
             status=status.HTTP_200_OK,
@@ -151,7 +151,7 @@ class ApiDeveloperView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful delete developer.",
+                "message": "Successful delete developer.",
                 "data": None,
             },
             status=status.HTTP_200_OK,
@@ -221,7 +221,7 @@ class APICreateAllDevelopersView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful get list of all developers",
+                "message": "Successful get list of all developers",
                 "data": developers_serializer_data,
             },
             status=status.HTTP_200_OK,
@@ -234,7 +234,7 @@ class APICreateAllDevelopersView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful developer's creation",
+                "message": "Successful developer's creation",
                 "data": created_developer_serializer_data,
             },
             status=status.HTTP_201_CREATED,

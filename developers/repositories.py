@@ -15,7 +15,7 @@ class DeveloperRepository(AbstractDeveloperRepositoryInterface):
             name_en=developer.name_en,
             role_ua=developer.role_ua,
             photo=developer.photo,
-            is_active=developer.is_active
+            is_active=developer.is_active,
         )
         return self._developer_to_dto(developer)
 

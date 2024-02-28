@@ -10,5 +10,5 @@ class Developer(models.Model):
     name_ua = models.CharField(max_length=50, verbose_name="Ім'я")
     name_en = models.CharField(max_length=50, verbose_name="Name")
     role_ua = models.CharField(max_length=50, verbose_name="Роль")
-    photo = models.CharField(max_length=255,verbose_name="Фото")
+    photo = models.CharField(max_length=255, verbose_name="Фото")
     is_active = models.BooleanField("Активний учасник", default=False)

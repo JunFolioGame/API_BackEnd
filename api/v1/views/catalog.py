@@ -39,7 +39,7 @@ class APICreateGameInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         Create new game_info
-        
+
         Parameters:
         - `name_ua` (String): Ukr name for game_info, required.
         - `name_en` (String): Eng name for game_info, required.
@@ -48,15 +48,15 @@ class APICreateGameInfoView(APIView, ApiBaseView):
         - `description_en` (String): Description of game, eng, required.
         - `is_team` (Bool): The number of the event, optional.
         - `members` (Integer): Number of participants, required.
-        
-           
+
+
         Returns:
            - 200: Returns event request data.
                 - data (dict[str, str]): Processing result.
-           - 400: Error response for invalid request.   
-        
+           - 400: Error response for invalid request.
+
         Example of successful processing:
-        
+
         {
           "status": "success",
           "message": "Successful game_info creation",
@@ -73,7 +73,7 @@ class APICreateGameInfoView(APIView, ApiBaseView):
             "like__number": 0
           }
         }
-        
+
         """,
         request_body=CreateGameInfoDTOSerializer,
         responses={
@@ -112,7 +112,7 @@ class APICreateGameInfoView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful game_info creation",
+                "message": "Successful game_info creation",
                 "data": created_game_info_serializer_data,
             },
             status=status.HTTP_201_CREATED,
@@ -132,17 +132,17 @@ class ApiGameInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         Get game_info detailed info by UUID
-        
+
         Parameters:
         - `uuid` (UUID): The ID of the game info, required.
 
         Returns:
            - 200: Returns event request data.
                 - data (dict[str, str]): Processing result.
-           - 400: Error response for invalid request.   
+           - 400: Error response for invalid request.
 
         Example of successful processing:
-        
+
         {
           "status": "success",
           "message": "Successful get game_info information",
@@ -192,7 +192,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         Update game_info information
-        
+
         Parameters for additional updating:
         - `uuid` (UUID): The ID of the game_info, `required`.
         - `name_ua` (String): Ukr name for game_info, optional.
@@ -202,15 +202,15 @@ class ApiGameInfoView(APIView, ApiBaseView):
         - `description_en` (String): Description of game, eng, optional.
         - `is_team` (Bool): The number of the event, optional.
         - `members` (Integer): Number of participants, optional.
-        
-           
+
+
         Returns:
            - 200: Returns event request data.
                 - data (dict[str, str]): Processing result.
-           - 400: Error response for invalid request.   
-        
+           - 400: Error response for invalid request.
+
         Example of successful processing:
-    
+
         {
           "status": "success",
           "message": "Successful update game_info information",
@@ -265,17 +265,17 @@ class ApiGameInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         Delete game_info
-        
+
         Parameters:
         - `uuid` (UUID): The ID of the game info, required.
 
         Returns:
            - 200: Returns event request data.
                 - data (dict[str, str]): Processing result.
-           - 400: Error response for invalid request.   
+           - 400: Error response for invalid request.
 
         Example of successful processing:
-        
+
         {
           "status": "success",
           "message": "Successful delete game_info.",
@@ -287,7 +287,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
             ]
           }
         }
-        
+
         """,
         manual_parameters=[
             openapi.Parameter(
@@ -316,7 +316,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful get game_info information",
+                "message": "Successful get game_info information",
                 "data": game_info_serializer_data,
             },
             status=status.HTTP_200_OK,
@@ -327,7 +327,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful update game_info information",
+                "message": "Successful update game_info information",
                 "data": game_info_serializer_data,
             },
             status=status.HTTP_200_OK,
@@ -338,7 +338,7 @@ class ApiGameInfoView(APIView, ApiBaseView):
         return Response(
             {
                 "status": "success",
-                "message": f"Successful delete game_info.",
+                "message": "Successful delete game_info.",
                 "data": data,
             },
             status=status.HTTP_200_OK,
@@ -355,17 +355,17 @@ class APIAllGameInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         Get all game_info
-        
+
         Parameters:
          - `none`
-         
+
         Returns:
            - 200: Returns event request data.
                 - data (dict[str, str]): Processing result.
-           - 400: Error response for invalid request.   
-        
+           - 400: Error response for invalid request.
+
         Example of successful processing:
-        
+
         {
           "status": "success",
           "message": "Successful get list of all game_infos",
@@ -430,7 +430,7 @@ class APIAllGameInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         List of game info, or with additional filtering and sorting.
-    
+
         Parameters for additional updating:
         - `uuid` (UUID): The ID of the game_info, `required`.
         - `name_ua` (String): Ukr name for game_info, optional.
@@ -440,23 +440,26 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         - `description_en` (String): Description of game, eng, optional.
         - `is_team` (Bool): The number of the event, optional.
         - `members` (Integer): Number of participants, optional.
-    
-    
+
+
         Parameters for filtering and sorting:
-        - `sort_selection` (String): Sorting field, optional. Available values : popularity, newness, member
-        - `members__gt` (Integer): The number of the event, optional. Available values : group, individual
-    
-    
+        - `sort_selection` (String): Sorting field, optional. \
+            Available values : popularity, newness, member
+        - `members__gt` (Integer): The number of the event, optional. \
+            Available values : group, individual
+
+
         Returns:
            - 200: Returns event request data.
                 - data (list[dict[str, str]]): Processing result.
-           - 400: Error response for invalid request.   
-    
+           - 400: Error response for invalid request.
+
         Example of successful processing:
-    
+
         {
           "status": "Success",
-          "message": "Successfully received an all game info, or with additional filtering and sorted",
+          "message": "Successfully received an all game info, \
+              or with additional filtering and sorted",
           "data": [
             {
               "name_ua": "1212",
@@ -555,7 +558,8 @@ class APIAllGameInfoView(APIView, ApiBaseView):
             game_info.model_dump() for game_info in catalog_filter_sort_dto_result
         ]
         return self._response_for_successful_list_of_game_info(
-            message="Successfully received an all game info, or with additional filtering and sorted",
+            message="Successfully received an all game info, \
+                or with additional filtering and sorted",
             data=catalog_result_serialized_data,
         )
 
@@ -594,7 +598,8 @@ class APIGameInfoLikeView(APIView, ApiBaseView):
 
         {
           "status": "success",
-          "message": "The operation with the addition of like was successfully completed",
+          "message": "The operation with the addition \
+              of like was successfully completed",
           "data": {
             "name_ua": "133",
             "name_en": "12323123",
@@ -619,7 +624,8 @@ class APIGameInfoLikeView(APIView, ApiBaseView):
         ],
         responses={
             201: openapi.Response(
-                "The operation with the addition of like by UUID game_info", created_game_info_response_schema
+                "The operation with the addition of like by UUID game_info",
+                created_game_info_response_schema,
             ),
             400: error_response,
         },
@@ -639,8 +645,10 @@ class APIGameInfoLikeView(APIView, ApiBaseView):
 
         game_info_serialized_data = game_info_dto.model_dump()
         return self._create_response_for_successful_get_game_info(
-            message="The operation with the addition of like was successfully completed",
-            data=game_info_serialized_data
+            message=(
+                "The operation with the addition of like was successfully completed"
+            ),
+            data=game_info_serialized_data,
         )
 
     @staticmethod

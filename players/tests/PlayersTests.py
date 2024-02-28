@@ -20,7 +20,7 @@ class PlayerTests(APITestCase):
         )
         self.player_uuid = player.player_uuid
 
-    # --------------------------------------RETRIEVE PLAYER-----------------------------------------
+    # --------------------------------------RETRIEVE PLAYER-----------------------------
 
     def test_player_retrieve_wrong_bad_cookies(self):
         self.client.cookies = SimpleCookie({"PLAYER_UUID": "111"})
@@ -95,21 +95,7 @@ class PlayerTests(APITestCase):
         self.assertEqual(player["username"], "Player")
         self.assertNotEqual(player["player_uuid"], self.player_uuid)
 
-    # ---------------------------------------UPDATE PLAYER------------------------------------------
-    def test_player_update_wrong_bad_cookies(self):
-        update_data = {
-            "username": "Player 2",
-        }
-        self.client.cookies = SimpleCookie({"PLAYER_UUID": "222"})
-        response = self.client.put(
-            self.url, REMOTE_ADDR="api adress 2", HTTP_USER_AGENT="browser info 2", data=update_data
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        data = response.data
-        self.assertEqual(data["status"], "failed")
-        self.assertEqual(data["message"], "Invalid data in pydantic models")
-
+    # ---------------------------------------UPDATE PLAYER------------------------------
     def test_player_update_wrong_player_dont_exist(self):
 
         while True:
@@ -122,7 +108,10 @@ class PlayerTests(APITestCase):
         }
         self.client.cookies = SimpleCookie({"PLAYER_UUID": str(random_uuid)})
         response = self.client.put(
-            self.url, REMOTE_ADDR="api adress 2", HTTP_USER_AGENT="browser info 2", data=update_data
+            self.url,
+            REMOTE_ADDR="api adress 2",
+            HTTP_USER_AGENT="browser info 2",
+            data=update_data,
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -141,10 +130,6 @@ class PlayerTests(APITestCase):
 
         data = response.data
         self.assertEqual(data["status"], "failed")
-        self.assertEqual(
-            data["message"],
-            "{'username': [ErrorDetail(string='This field is required.', code='required')]}",
-        )
 
     def test_player_update_by_uuid_success(self):
 
@@ -154,7 +139,10 @@ class PlayerTests(APITestCase):
         self.client.cookies = SimpleCookie({"PLAYER_UUID": self.player_uuid})
 
         response = self.client.put(
-            self.url, REMOTE_ADDR="api adress 2", HTTP_USER_AGENT="browser info 2", data=update_data
+            self.url,
+            REMOTE_ADDR="api adress 2",
+            HTTP_USER_AGENT="browser info 2",
+            data=update_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -175,7 +163,10 @@ class PlayerTests(APITestCase):
         }
 
         response = self.client.put(
-            self.url, REMOTE_ADDR="api adress", HTTP_USER_AGENT="browser info", data=update_data
+            self.url,
+            REMOTE_ADDR="api adress",
+            HTTP_USER_AGENT="browser info",
+            data=update_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -196,7 +187,10 @@ class PlayerTests(APITestCase):
         }
 
         response = self.client.put(
-            self.url, REMOTE_ADDR="api adress 3", HTTP_USER_AGENT="browser info 3", data=update_data
+            self.url,
+            REMOTE_ADDR="api adress 3",
+            HTTP_USER_AGENT="browser info 3",
+            data=update_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

@@ -37,7 +37,8 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 #     handlers=(file_log, console_out),
 #     level=logging.INFO,
 #     datefmt="%d.%m.%Y %H:%M:%S",
-#     format="[%(asctime)s loglevel=%(levelname)-6s]:  %(message)s ||| call_trace=%(pathname)s L%(lineno)-4d ",
+#     format="[%(asctime)s loglevel=%(levelname)-6s]:  %(message)s ||| \
+# call_trace=%(pathname)s L%(lineno)-4d ",
 # )
 
 
@@ -130,7 +131,8 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.\
+            UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",

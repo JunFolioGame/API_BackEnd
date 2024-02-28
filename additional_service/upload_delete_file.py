@@ -17,7 +17,8 @@ class AdditionalService(AdditionalServiceInterface):
         if not os.path.exists(image_directory):
             os.makedirs(image_directory)
         else:
-            filename = f"{filename[:-4]}_{int(time.time())}{filename[-4:]}"  # якщо папка вже існує, то напевне там є малюнки
+            # якщо папка вже існує, то напевне там є малюнки
+            filename = f"{filename[:-4]}_{int(time.time())}{filename[-4:]}"
 
         # Завантажуємо зображення
         raw_file = bytesio_file.file

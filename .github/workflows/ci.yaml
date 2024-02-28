@@ -18,7 +18,7 @@ jobs:
       - name: flake8 Lint
         uses: py-actions/flake8@v2
         with:
-          max-line-length: "121"
+          max-line-length: "88"
 
   black:
     runs-on: ubuntu-latest

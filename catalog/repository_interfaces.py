@@ -35,11 +35,9 @@ class AbstractGameInfoRepositoryInterface(metaclass=ABCMeta):
     @abstractmethod
     def catalog_filter_sort(
         self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
-    ) -> list[GameInfoDTOResponse]:
-        ...
+    ) -> list[GameInfoDTOResponse]: ...
 
     @abstractmethod
     def set_like_game_info_by_uuid(
         self, game_info_uuid: UUID, player_uuid: UUID
-    ) -> GameInfoDTOResponse:
-        ...
+    ) -> GameInfoDTOResponse: ...

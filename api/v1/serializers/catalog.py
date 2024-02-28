@@ -39,7 +39,6 @@ class FilterGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
     is_active = serializers.BooleanField(required=False, allow_null=True, default=None)
 
 
-
 class UpdateGameInfoDTOSerializer(FilterGameInfoDTOSerializer):
     photo_jpeg = serializers.ImageField(required=False, allow_null=True)
 
