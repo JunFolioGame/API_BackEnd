@@ -7,6 +7,9 @@ from catalog.services import GameInfoService
 from developers.interactors import DeveloperInteractor
 from developers.repositories import DeveloperRepository
 from developers.services import DeveloperService
+from gallery.interactors import GalleryInteractor
+from gallery.repositories import GalleryRepository
+from gallery.services import GalleryService
 from players.interactors import PlayerInteractor
 from players.repositories import PlayerRepository
 from players.services import PlayerService
@@ -20,6 +23,7 @@ class RepositoryContainer(containers.DeclarativeContainer):
     player_repository = providers.Factory(PlayerRepository)
     developer_repository = providers.Factory(DeveloperRepository)
     game_info_repository = providers.Factory(GameInfoRepository)
+    gallery_repository = providers.Factory(GalleryRepository)
 
 
 class ServiceContainer(containers.DeclarativeContainer):
@@ -31,6 +35,9 @@ class ServiceContainer(containers.DeclarativeContainer):
     )
     game_info_service = providers.Factory(
         GameInfoService, repository=RepositoryContainer.game_info_repository
+    )
+    gallery_service = providers.Factory(
+        GalleryService, repository=RepositoryContainer.gallery_repository
     )
 
 
@@ -46,5 +53,10 @@ class ProjectContainer(containers.DeclarativeContainer):
     game_info_interactor: providers.Provider[GameInfoInteractor] = providers.Factory(
         GameInfoInteractor,
         game_info_service=ServiceContainer.game_info_service,
+        additional_service=AdditionalServiceContainer.additional_service,
+    )
+    gallery_interactor: providers.Provider[GalleryInteractor] = providers.Factory(
+        GalleryInteractor,
+        gallery_service=ServiceContainer.gallery_service,
         additional_service=AdditionalServiceContainer.additional_service,
     )
