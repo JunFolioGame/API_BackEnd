@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "players.apps.PlayersConfig",
     "developers.apps.DevelopersConfig",
     "catalog.apps.CatalogConfig",
+    "gallery.apps.GalleryConfig",
     "api.v1.apps.ApiConfig",
 ]
 
