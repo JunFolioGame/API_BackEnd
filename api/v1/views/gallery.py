@@ -7,6 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.v1.pagination.ten_items_pagination import TenItemsPagination
 from api.v1.schemas.base_schema import error_response
 from api.v1.schemas.gallery import (
     created_gallery_response_schema,
@@ -69,7 +70,7 @@ class ApiCreateGalleryView(APIView, ApiBaseView):
         )
 
 
-class ApiGetGalleryView(APIView, ApiBaseView):
+class ApiGetGalleryView(APIView, ApiBaseView, TenItemsPagination):
     parser_classes = (
         parsers.FormParser,
         parsers.MultiPartParser,
@@ -78,6 +79,18 @@ class ApiGetGalleryView(APIView, ApiBaseView):
 
     @swagger_auto_schema(
         operation_description="Get gallery",
+        manual_parameters=[
+            openapi.Parameter(
+                "page",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+            ),
+            openapi.Parameter(
+                "page_size",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+            ),
+        ],
         responses={
             200: openapi.Response("Get gallery", gallery_list_response_schema),
             400: error_response,
@@ -90,6 +103,8 @@ class ApiGetGalleryView(APIView, ApiBaseView):
             gallery = gallery_interactor.get_gallery(game_uuid=game_uuid)
         except GameInfoDoesNotExist as exception:
             return self._create_response_not_found(exception)
+
+        gallery = self.paginate_queryset(gallery, request, self)
 
         gallery_serialized_data = [
             gallery_item.model_dump() for gallery_item in gallery

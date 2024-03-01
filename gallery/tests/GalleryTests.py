@@ -52,6 +52,13 @@ class GalleryTests(APITestCase):
         )
 
     # -------------------------------------GALLERY LIST---------------------------------
+    def test_gallery_list_wrong_invalid_page(self):
+
+        response = self.client.get(self.url + str(self.game_uuid) + "?page=2")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.data
+        self.assertEqual(data["detail"], "Invalid page.")
+
     def test_gallery_list_wrong_not_found(self):
 
         while True:
