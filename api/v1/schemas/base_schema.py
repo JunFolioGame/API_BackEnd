@@ -55,6 +55,26 @@ developer_properties = (
     ),
 )
 
+gallery_item_properties = (
+    openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "topic": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                description="Gallery item topic",
+            ),
+            "photo": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                description="Gallery item photo",
+            ),
+            "team_name": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                description="Gallery item team name",
+            ),
+        },
+    ),
+)
+
 
 game_info_properties = (
     openapi.Schema(
