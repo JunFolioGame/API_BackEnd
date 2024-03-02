@@ -4,7 +4,6 @@ from rest_framework.exceptions import ValidationError
 
 class CreateGalleryItemDTOSerializer(serializers.Serializer):
     topic = serializers.CharField(max_length=255)
-    game = serializers.UUIDField()
     photo_jpeg = serializers.ImageField()
     team_name = serializers.CharField(max_length=255)
 

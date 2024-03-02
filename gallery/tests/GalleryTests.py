@@ -2,7 +2,6 @@ import os
 from uuid import uuid4
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -14,8 +13,7 @@ from gallery.repositories import GalleryRepository
 
 class GalleryTests(APITestCase):
     def setUp(self):
-        self.url = reverse("api:gallery:gallery")
-
+        self.url = "/api/v1/gallery/"
         with open(
             os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
         ) as photo_file:
@@ -75,7 +73,9 @@ class GalleryTests(APITestCase):
 
     def test_developer_list_success(self):
 
-        response = self.client.get(self.url + str(self.game_uuid))
+        response = self.client.get(
+            self.url + str(self.game_uuid),
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.data
@@ -91,7 +91,7 @@ class GalleryTests(APITestCase):
     # --------------------------------------CREATE GALLERY------------------------------
     def test_gallery_create_wrong_empty(self):
         create_data = {}
-        response = self.client.post(self.url, data=create_data)
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
@@ -99,9 +99,8 @@ class GalleryTests(APITestCase):
         create_data = {
             "photo_jpeg": self.photo_jpeg,
             "team_name": "Команда 2",
-            "game": self.game_uuid,
         }
-        response = self.client.post(self.url, data=create_data)
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
@@ -109,9 +108,8 @@ class GalleryTests(APITestCase):
         create_data = {
             "topic": "Тема 2",
             "team_name": "Команда 2",
-            "game": self.game_uuid,
         }
-        response = self.client.post(self.url, data=create_data)
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
@@ -119,19 +117,8 @@ class GalleryTests(APITestCase):
         create_data = {
             "topic": "Тема 2",
             "photo_jpeg": self.photo_jpeg,
-            "game": self.game_uuid,
         }
-        response = self.client.post(self.url, data=create_data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["status"], "failed")
-
-    def test_gallery_create_wrong_game_required(self):
-        create_data = {
-            "topic": "Тема 2",
-            "photo_jpeg": self.photo_jpeg,
-            "team_name": "Команда 2",
-        }
-        response = self.client.post(self.url, data=create_data)
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
@@ -140,9 +127,8 @@ class GalleryTests(APITestCase):
             "topic": "Тема 2",
             "photo_jpeg": self.wrong_photo_jpeg,
             "team_name": "Команда 2",
-            "game": self.game_uuid,
         }
-        response = self.client.post(self.url, data=create_data)
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         data = response.data
@@ -155,7 +141,7 @@ class GalleryTests(APITestCase):
             "team_name": "Команда 2",
             "game": self.game_uuid,
         }
-        response = self.client.post(self.url, data=create_data)
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
 
         data = response.data
         self.assertEqual(data["status"], "success")

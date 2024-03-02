@@ -1,10 +1,9 @@
 from django.urls import path
 
-from api.v1.views.gallery import ApiCreateGalleryView, ApiGetGalleryView
+from api.v1.views.gallery import ApiGetCreateGalleryView
 
-app_name = "developer"
+app_name = "gallery"
 
 urlpatterns = [
-    path("", ApiCreateGalleryView.as_view(), name="gallery"),
-    path("<uuid:game_uuid>", ApiGetGalleryView.as_view(), name="gallery"),
+    path("<uuid:game_uuid>", ApiGetCreateGalleryView.as_view(), name="galleries"),
 ]

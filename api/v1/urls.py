@@ -9,5 +9,5 @@ urlpatterns = [
     path("developer/", include("developers.urls", namespace="developers")),
     path("player/", include("players.urls", namespace="players")),
     path("game_info/", include("catalog.urls", namespace="catalog")),
-    path("gallery/", include("gallery.urls", namespace="gallery")),
+    path("gallery/", include("gallery.urls", namespace="galleries")),
 ]

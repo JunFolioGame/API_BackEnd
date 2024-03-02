@@ -20,7 +20,7 @@ from core.containers import ProjectContainer as GalleryContainer
 from gallery.dto import CreateGalleryDTO
 
 
-class ApiCreateGalleryView(APIView, ApiBaseView):
+class ApiGetCreateGalleryView(APIView, ApiBaseView, TenItemsPagination):
     parser_classes = (
         parsers.FormParser,
         parsers.MultiPartParser,
@@ -38,12 +38,14 @@ class ApiCreateGalleryView(APIView, ApiBaseView):
         },
         tags=["Gallery"],
     )
-    def post(self, request: Request) -> Response:
+    def post(self, request: Request, game_uuid: UUID) -> Response:
         gallery_serializer = CreateGalleryItemDTOSerializer(data=request.data)
         if not gallery_serializer.is_valid():
             return self._create_response_for_invalid_serializers(gallery_serializer)
         bytesio_file = request.data.get("photo_jpeg", None)
-        gallery_dto = CreateGalleryDTO(**gallery_serializer.validated_data)
+        gallery_dto = CreateGalleryDTO(
+            **gallery_serializer.validated_data, game=game_uuid
+        )
 
         gallery_interactor = GalleryContainer.gallery_interactor()
         try:
@@ -68,14 +70,6 @@ class ApiCreateGalleryView(APIView, ApiBaseView):
             },
             status=status.HTTP_201_CREATED,
         )
-
-
-class ApiGetGalleryView(APIView, ApiBaseView, TenItemsPagination):
-    parser_classes = (
-        parsers.FormParser,
-        parsers.MultiPartParser,
-        parsers.FileUploadParser,
-    )
 
     @swagger_auto_schema(
         operation_description="Get gallery",
