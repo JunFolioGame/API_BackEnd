@@ -30,6 +30,9 @@ class Vote(models.Model):
         verbose_name="Список користувачів",
     )
 
+    def __str__(self):
+        return f"id: {self.uuid} likes: {self.number}"
+
     def update_number(self):
         self.number = self.list_like_user_uuid.count()
         self.save()
@@ -38,6 +41,3 @@ class Vote(models.Model):
 @receiver(m2m_changed, sender=Vote.list_like_user_uuid.through)
 def update_like_number(sender, instance, **kwargs):
     instance.update_number()
-
-    def __str__(self):
-        return f"id: {self.uuid} likes: {self.number}"

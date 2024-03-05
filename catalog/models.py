@@ -50,6 +50,9 @@ class Like(CoreModel):
         verbose_name="Список користувачів",
     )
 
+    def __str__(self):
+        return f"id: {self.uuid} likes: {self.number}"
+
     def update_number(self):
         self.number = self.list_vote_user_id.count()
         self.save()
@@ -58,9 +61,6 @@ class Like(CoreModel):
 @receiver(m2m_changed, sender=Like.list_vote_user_id.through)
 def update_like_number(sender, instance, **kwargs):
     instance.update_number()
-
-    def __str__(self):
-        return f"id: {self.uuid} likes: {self.number}"
 
 
 class Picture(CoreModel):
