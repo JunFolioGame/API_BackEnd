@@ -2,9 +2,10 @@ from uuid import UUID
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, parsers
+from rest_framework import parsers, status
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.v1.decorators.uuid_required import uuid_required
 from api.v1.schemas.base_schema import error_response, successful_response_without_data
@@ -14,19 +15,17 @@ from api.v1.schemas.catalog import (
 )
 from api.v1.serializers.catalog import (
     CreateGameInfoDTOSerializer,
-    UpdateGameInfoDTOSerializer,
     FilterAndSortGameInfoDTOSerializer,
+    UpdateGameInfoDTOSerializer,
 )
 from api.v1.views.base import ApiBaseView
-from rest_framework.views import APIView
-
 from catalog.dto import (
     CreateGameInfoDTO,
-    UpdateGameInfoDTORequest,
     FilterSortGameInfoDTORequest,
+    UpdateGameInfoDTORequest,
 )
-from core.containers import ProjectContainer as GameInfoContainer
 from catalog.exceptions import GameInfoDoesNotExist
+from core.containers import ProjectContainer as GameInfoContainer
 
 
 class APICreateGameInfoView(APIView, ApiBaseView):
@@ -647,6 +646,94 @@ class APIGameInfoLikeView(APIView, ApiBaseView):
         return self._create_response_for_successful_get_game_info(
             message=(
                 "The operation with the addition of like was successfully completed"
+            ),
+            data=game_info_serialized_data,
+        )
+
+    @staticmethod
+    def _create_response_for_successful_get_game_info(message, data):
+        return Response(
+            {
+                "status": "Success",
+                "message": message,
+                "data": data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class APIGameInfoUnlikeView(APIView, ApiBaseView):
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.FileUploadParser,
+    )
+
+    @swagger_auto_schema(
+        operation_description="""
+        The operation with the removal of like by UUID game_info
+
+        Parameters:
+        - `uuid` (UUID): The ID of the game info, required.
+
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, str]): Processing result.
+           - 400: Error response for invalid request.
+
+        Example of successful processing:
+
+        {
+          "status": "success",
+          "message": "The operation with the removal \
+              of like was successfully completed",
+          "data": {
+            "name_ua": "133",
+            "name_en": "12323123",
+            "photo": "./cloud_img/game_info/12323123\\12323123_11lab_price.png",
+            "description_ua": "21313",
+            "description_en": "12",
+            "is_team": false,
+            "is_active": false,
+            "members": 0,
+            "uuid": "d80de9cf-3516-450b-9173-03476d8270e6",
+            "like__number": 0
+          }
+        }
+        """,
+        manual_parameters=[
+            openapi.Parameter(
+                "uuid",
+                in_=openapi.IN_PATH,
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_UUID,
+            )
+        ],
+        responses={
+            201: openapi.Response(
+                "The operation with the removal of like by UUID game_info",
+                created_game_info_response_schema,
+            ),
+            400: error_response,
+        },
+        tags=["GameInfo"],
+    )
+    @uuid_required
+    def get(self, request: Request, uuid: UUID):
+        game_info_interactor = GameInfoContainer.game_info_interactor()
+        player_uuid = request.COOKIES.get("PLAYER_UUID")
+
+        try:
+            game_info_dto = game_info_interactor.unset_like_game_info_by_uuid(
+                uuid, player_uuid
+            )
+        except GameInfoDoesNotExist as exception:
+            return self._create_response_not_found(exception)
+
+        game_info_serialized_data = game_info_dto.model_dump()
+        return self._create_response_for_successful_get_game_info(
+            message=(
+                "The operation with the removal of like was successfully completed"
             ),
             data=game_info_serialized_data,
         )

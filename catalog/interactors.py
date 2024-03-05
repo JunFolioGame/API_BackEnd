@@ -4,9 +4,9 @@ from uuid import UUID
 from additional_service.services_interfaces import AdditionalServiceInterface
 from catalog.dto import (
     CreateGameInfoDTO,
+    FilterSortGameInfoDTORequest,
     GameInfoDTOResponse,
     UpdateGameInfoDTORequest,
-    FilterSortGameInfoDTORequest,
 )
 from catalog.services_interfaces import GameInfoServiceInterface
 
@@ -73,5 +73,12 @@ class GameInfoInteractor:
         self, game_info_uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
         return self.game_info_service.set_like_game_info_by_uuid(
+            game_info_uuid, player_uuid
+        )
+
+    def unset_like_game_info_by_uuid(
+        self, game_info_uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse:
+        return self.game_info_service.unset_like_game_info_by_uuid(
             game_info_uuid, player_uuid
         )
