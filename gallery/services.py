@@ -1,7 +1,8 @@
 from uuid import UUID
-from gallery.dto import GalleryDTO, CreateGalleryDTO
-from gallery.services_interfaces import AbstractGalleryServiceInterface
+
+from gallery.dto import CreateGalleryDTO, GalleryDTO
 from gallery.repository_interfaces import AbstractGalleryRepositoryInterface
+from gallery.services_interfaces import AbstractGalleryServiceInterface
 
 
 class GalleryService(AbstractGalleryServiceInterface):
@@ -13,3 +14,17 @@ class GalleryService(AbstractGalleryServiceInterface):
 
     def get_gallery(self, game_uuid: UUID) -> list[GalleryDTO]:
         return self.repository.get_gallery(game_uuid=game_uuid)
+
+    def set_like_gallery_item_by_uuid(
+        self, gallery_uuid: UUID, player_uuid: UUID
+    ) -> GalleryDTO:
+        return self.repository.set_like_gallery_item_by_uuid(
+            gallery_uuid=gallery_uuid, player_uuid=player_uuid
+        )
+
+    def unset_like_gallery_item_by_uuid(
+        self, gallery_uuid: UUID, player_uuid: UUID
+    ) -> GalleryDTO:
+        return self.repository.unset_like_gallery_item_by_uuid(
+            gallery_uuid=gallery_uuid, player_uuid=player_uuid
+        )

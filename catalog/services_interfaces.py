@@ -1,11 +1,11 @@
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
 from uuid import UUID
 
 from catalog.dto import (
-    GameInfoDTOResponse,
-    UpdateGameInfoDTORequest,
     CreateGameInfoDTO,
     FilterSortGameInfoDTORequest,
+    GameInfoDTOResponse,
+    UpdateGameInfoDTORequest,
 )
 
 
@@ -39,5 +39,10 @@ class GameInfoServiceInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def set_like_game_info_by_uuid(
+        self, uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse: ...
+
+    @abstractmethod
+    def unset_like_game_info_by_uuid(
         self, uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse: ...

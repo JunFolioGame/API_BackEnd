@@ -1,10 +1,10 @@
 from uuid import UUID
 
 from catalog.dto import (
-    GameInfoDTOResponse,
     CreateGameInfoDTO,
-    UpdateGameInfoDTORequest,
     FilterSortGameInfoDTORequest,
+    GameInfoDTOResponse,
+    UpdateGameInfoDTORequest,
 )
 from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
 from catalog.services_interfaces import GameInfoServiceInterface
@@ -40,3 +40,8 @@ class GameInfoService(GameInfoServiceInterface):
         self, game_info_uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
         return self.repository.set_like_game_info_by_uuid(game_info_uuid, player_uuid)
+
+    def unset_like_game_info_by_uuid(
+        self, game_info_uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse:
+        return self.repository.unset_like_game_info_by_uuid(game_info_uuid, player_uuid)

@@ -4,10 +4,10 @@ from annoying.functions import get_object_or_None
 from django.db import transaction
 
 from catalog.dto import (
-    GameInfoDTOResponse,
-    UpdateGameInfoDTORequest,
     CreateGameInfoDTO,
     FilterSortGameInfoDTORequest,
+    GameInfoDTOResponse,
+    UpdateGameInfoDTORequest,
 )
 from catalog.exceptions import GameInfoDoesNotExist
 from catalog.models import GameInfo, Like
@@ -60,7 +60,7 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
         return result_of_delete_operation
 
     def get_all_game_info(self) -> list[GameInfoDTOResponse]:
-        game_info = GameInfo.objects.all()
+        game_info = GameInfo.objects.all().order_by("-like__number")
         return [
             self._instance_model_to_dto_model(
                 dto_model=GameInfoDTOResponse, instance_model=game_info_obj
@@ -101,13 +101,16 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
             dto_model=GameInfoDTOResponse, instance_model=game_info
         )
 
-    # def _game_info_to_dto(self, game_info: GameInfo) -> GameInfoDTOResponse:
-    #     return GameInfoDTOResponse(
-    #         uuid=game_info.uuid,
-    #         name_ua=game_info.name_ua,
-    #         name_en=game_info.name_en,
-    #         is_active=game_info.is_active,
-    #     )   переробив на універсальну функцію
+    def unset_like_game_info_by_uuid(
+        self, game_info_uuid: UUID, player_uuid: UUID
+    ) -> GameInfoDTOResponse:
+        game_info = get_object_or_None(GameInfo, uuid=game_info_uuid)
+        if not game_info:
+            raise GameInfoDoesNotExist()
+        game_info.like.list_vote_user_id.remove(player_uuid)
+        return self._instance_model_to_dto_model(
+            dto_model=GameInfoDTOResponse, instance_model=game_info
+        )
 
     @staticmethod
     def _instance_model_to_dto_model(dto_model, instance_model, *args, **kwargs):

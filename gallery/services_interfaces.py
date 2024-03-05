@@ -1,6 +1,7 @@
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
 from uuid import UUID
-from gallery.dto import GalleryDTO, CreateGalleryDTO
+
+from gallery.dto import CreateGalleryDTO, GalleryDTO
 
 
 class AbstractGalleryServiceInterface(metaclass=ABCMeta):
@@ -10,4 +11,16 @@ class AbstractGalleryServiceInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def get_gallery(self, game_uuid: UUID) -> list[GalleryDTO]:
+        pass
+
+    @abstractmethod
+    def set_like_gallery_item_by_uuid(
+        self, gallery_uuid: UUID, player_uuid: UUID
+    ) -> GalleryDTO:
+        pass
+
+    @abstractmethod
+    def unset_like_gallery_item_by_uuid(
+        self, gallery_uuid: UUID, player_uuid: UUID
+    ) -> GalleryDTO:
         pass
