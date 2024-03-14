@@ -10,7 +10,6 @@ from catalog.dto import CreateGameInfoDTO
 from catalog.repositories import GameInfoRepository
 from gallery.dto import CreateGalleryDTO
 from gallery.repositories import GalleryRepository
-from players.dto import CreatePlayerDTO
 from players.repositories import PlayerRepository
 
 
@@ -32,13 +31,9 @@ class GalleryTests(APITestCase):
             )
 
         player_repository = PlayerRepository()
-        player1 = player_repository.create_player(
-            CreatePlayerDTO(api_adress="api adress", browser_info="browser info")
-        )
+        player1 = player_repository.create_player()
         self.player1_uuid = player1.player_uuid
-        player2 = player_repository.create_player(
-            CreatePlayerDTO(api_adress="api adress 2", browser_info="browser info 2")
-        )
+        player2 = player_repository.create_player()
         self.player2_uuid = player2.player_uuid
 
         game_repository = GameInfoRepository()

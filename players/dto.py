@@ -3,11 +3,6 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class CreatePlayerDTO(BaseModel):
-    api_adress: str
-    browser_info: str
-
-
-class PlayerDTO(CreatePlayerDTO):
+class PlayerDTO(BaseModel):
     player_uuid: UUID
     username: str
