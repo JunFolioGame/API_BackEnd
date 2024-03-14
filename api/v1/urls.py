@@ -10,4 +10,5 @@ urlpatterns = [
     path("player/", include("players.urls", namespace="players")),
     path("game_info/", include("catalog.urls", namespace="catalog")),
     path("gallery/", include("gallery.urls", namespace="galleries")),
+    path("game_session/", include("game_session.urls", namespace="game_sessions")),
 ]
