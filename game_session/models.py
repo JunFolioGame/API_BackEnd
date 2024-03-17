@@ -20,6 +20,11 @@ class GameSession(models.Model):
         default=identificator_generator,
         verbose_name="Ідентифікатор",
     )
+    is_active = models.BooleanField(default=True)
+    final_teams = models.SmallIntegerField(
+        null=True,
+        verbose_name="Фінальна кількість команд",
+    )
     creator = models.ForeignKey(
         Player, related_name="game", on_delete=models.SET_NULL, null=True
     )

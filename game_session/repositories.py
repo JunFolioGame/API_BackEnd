@@ -30,7 +30,7 @@ class GameSessionRepository(AbstractGameSessionRepositoryInterface):
         game_session = get_object_or_None(
             GameSession, identificator=session_identificator
         )
-        if not game_session:
+        if not game_session or not game_session.is_active:
             raise GameSessionDoesNotExist()
         if (
             game_session.lobby
@@ -51,14 +51,46 @@ class GameSessionRepository(AbstractGameSessionRepositoryInterface):
             .prefetch_related("lobby")
             .first()
         )
-        if not game_session:
+        if not game_session or not game_session.is_active:
             raise GameSessionDoesNotExist()
         lobby = [player.player_uuid for player in game_session.lobby.all()]
         if len(lobby) < game_session.team_min * game_session.team_players_min:
             raise GameSessionNotEnough()
+        lobby, teams = self._sort_teams(
+            players=lobby,
+            min_size=game_session.team_players_min,
+            max_size=game_session.team_players_max,
+            teams_maximum=game_session.team_max,
+        )
         result = self._game_session_to_dto(game_session=game_session, lobby=lobby)
-        game_session.delete()
+        game_session.is_active = False
+        game_session.final_teams = teams
+        game_session.save()
         return result
+
+    def _sort_for_me(self, players: list, n: int) -> tuple[list, int]:
+        return ([players[x::n] for x in range(n)], n)
+
+    def _sort_teams(
+        self,
+        players: list,
+        min_size: int,
+        max_size: int,
+        teams_maximum: int,
+    ) -> tuple[list, int]:
+        players_amount = len(players)
+        for divider in (my_range := range(min_size, max_size + 1)):
+            if (
+                players_amount % divider == 0
+                and (n := players_amount // divider) < teams_maximum + 1
+            ):
+                return self._sort_for_me(players=players, n=n)
+        for divider in my_range:
+            if (
+                players_amount % divider != 0
+                and (n := players_amount // divider) < teams_maximum + 1
+            ):
+                return self._sort_for_me(players=players, n=n)
 
     def _game_session_to_dto(
         self, game_session: GameSession, lobby: list = [[]]
