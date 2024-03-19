@@ -6,6 +6,7 @@ from catalog.dto import (
     FilterSortGameInfoDTORequest,
     GameInfoDTOResponse,
     UpdateGameInfoDTORequest,
+    StatisticsOnTheSiteDTOResponse,
 )
 
 
@@ -35,14 +36,21 @@ class GameInfoServiceInterface(metaclass=ABCMeta):
     @abstractmethod
     def catalog_filter_sort(
         self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
-    ) -> list[GameInfoDTOResponse]: ...
+    ) -> list[GameInfoDTOResponse]:
+        ...
 
     @abstractmethod
     def set_like_game_info_by_uuid(
         self, uuid: UUID, player_uuid: UUID
-    ) -> GameInfoDTOResponse: ...
+    ) -> GameInfoDTOResponse:
+        ...
 
     @abstractmethod
     def unset_like_game_info_by_uuid(
         self, uuid: UUID, player_uuid: UUID
-    ) -> GameInfoDTOResponse: ...
+    ) -> GameInfoDTOResponse:
+        ...
+
+    @abstractmethod
+    def get_statistics_on_the_site(self) -> StatisticsOnTheSiteDTOResponse:
+        ...

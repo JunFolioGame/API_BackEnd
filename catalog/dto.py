@@ -37,3 +37,9 @@ class FilterSortGameInfoDTORequest(UpdateGameInfoDTORequest):
     sort_selection: Optional[str] = None
     members__gt: Optional[int] = None
     uuid: Optional[UUID] = None
+
+
+class StatisticsOnTheSiteDTOResponse(BaseModel):
+    number_of_games: int
+    played: int | None = None
+    number_of_teams: int | None = None

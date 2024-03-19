@@ -1,7 +1,11 @@
 from abc import ABCMeta, abstractmethod
 from uuid import UUID
 
-from game_session.dto import CreateGameSessionDTO, GameSessionDTO
+from game_session.dto import (
+    CreateGameSessionDTO,
+    GameSessionDTO,
+    StatisticsSessionDTOResponse,
+)
 
 
 class AbstractGameSessionRepositoryInterface(metaclass=ABCMeta):
@@ -20,3 +24,7 @@ class AbstractGameSessionRepositoryInterface(metaclass=ABCMeta):
         self, creator_uuid: UUID, session_identificator: str
     ) -> GameSessionDTO:
         pass
+
+    @abstractmethod
+    def get_statistics_session(self) -> StatisticsSessionDTOResponse:
+        ...

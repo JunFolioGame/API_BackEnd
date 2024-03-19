@@ -10,9 +10,15 @@ class GameSessionDTO(BaseModel):
     team_max: int
     team_players_min: int
     team_players_max: int
-    lobby: Optional[List[UUID] | List[List[UUID]]] = []
+    lobby: Optional[List[dict[str, str]] | List[List[dict[str, str]]]] = []
 
 
 class CreateGameSessionDTO(GameSessionDTO):
     creator_uuid: UUID
     session_identificator: Optional[str] = ""
+
+
+class StatisticsSessionDTOResponse(BaseModel):
+    played: int
+    number_of_teams: int
+    number_of_games: int | None = None

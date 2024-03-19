@@ -1,10 +1,15 @@
 import os
 
 from django.core.files.uploadedfile import SimpleUploadedFile
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from catalog.dto import CreateGameInfoDTO
 from catalog.repositories import GameInfoRepository
+from game_session.models import GameSession
+from game_session.repositories import GameSessionRepository
+from players.models import Player
+from players.repositories import PlayerRepository
 
 
 class CatalogTests(APITestCase):
@@ -36,6 +41,23 @@ class CatalogTests(APITestCase):
             )
         )
         self.game_info_uuid = game_info.uuid
+
+        player_repository = PlayerRepository()
+
+        self.players = [
+            player_repository.create_player().player_uuid for _ in range(24)
+        ]
+
+        self.game_session_repository = GameSessionRepository()
+
+        self.game_session = GameSession.objects.create(
+            creator=Player(player_uuid=self.players[0]),
+            final_teams=3,
+            team_min=2,
+            team_max=4,
+            team_players_min=4,
+            team_players_max=6,
+        )
 
     # Positive test case for APICreateGameInfoView post method
     def test_create_game_info_success(self):
@@ -131,3 +153,25 @@ class CatalogTests(APITestCase):
         assert response.status_code == 200
         assert response.data["status"] == "Success"
         assert response.data["message"] == "Successful get list of all game_info"
+
+    def test_get_statistics_on_the_site(self):
+        response = self.client.get("/api/v1/game_info/statistic/")
+        assert response.status_code == 200
+        assert response.data["status"] == "Success"
+        assert (
+            response.data["message"]
+            == "Successful get statistics about games on the site"
+        )
+
+    def test_get_statistics_on_the_site_success(self):
+        response = self.client.get("/api/v1/game_info/statistic/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.data
+        self.assertEqual(data["status"], "Success")
+        self.assertEqual(
+            data["message"], "Successful get statistics about games on the site"
+        )
+        statistic = data["data"]
+        self.assertEqual(statistic["played"], 0)
+        self.assertEqual(statistic["number_of_teams"], 3)
+        self.assertEqual(statistic["number_of_games"], 1)

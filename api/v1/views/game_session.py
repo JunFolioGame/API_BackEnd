@@ -164,10 +164,14 @@ class ApiFillDeleteGameSessionView(APIView, ApiBaseView):
                 "team_players_max": 2,
                 "lobby": [
                 [
-                    "cd83c2cf-ea3c-48fa-ade2-655a77efa6c8"
+                    {
+                      "3df11585-9ca2-4b5d-a1c5-5c5bf4f062fd": "567676"
+                    },
                 ],
                 [
-                    "17ggc2cg-ea3c-48fa-ade2-655a77efa6c8"
+                    {
+                      "b4991810-3ed4-4730-924d-5dbe77a1243f": "Player"
+                    },
                 ]
                 ]
             }

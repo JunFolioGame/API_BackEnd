@@ -1,8 +1,13 @@
 from uuid import UUID
 
 from annoying.functions import get_object_or_None
+from django.db.models import Count, Sum, Q
 
-from game_session.dto import CreateGameSessionDTO, GameSessionDTO
+from game_session.dto import (
+    CreateGameSessionDTO,
+    GameSessionDTO,
+    StatisticsSessionDTOResponse,
+)
 from game_session.exceptions import (
     GameSessionDoesNotExist,
     GameSessionFull,
@@ -53,7 +58,10 @@ class GameSessionRepository(AbstractGameSessionRepositoryInterface):
         )
         if not game_session or not game_session.is_active:
             raise GameSessionDoesNotExist()
-        lobby = [player.player_uuid for player in game_session.lobby.all()]
+        lobby = [
+            {str(player.player_uuid): player.username}
+            for player in game_session.lobby.all()
+        ]
         if len(lobby) < game_session.team_min * game_session.team_players_min:
             raise GameSessionNotEnough()
         lobby, teams = self._sort_teams(
@@ -103,3 +111,10 @@ class GameSessionRepository(AbstractGameSessionRepositoryInterface):
             team_players_max=game_session.team_players_max,
             lobby=lobby,
         )
+
+    def get_statistics_session(self) -> StatisticsSessionDTOResponse:
+        result = GameSession.objects.aggregate(
+            played=Count("pk", filter=Q(is_active=False)),
+            number_of_teams=Sum("final_teams"),
+        )
+        return StatisticsSessionDTOResponse(**result)
