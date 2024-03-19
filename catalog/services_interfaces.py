@@ -37,20 +37,20 @@ class GameInfoServiceInterface(metaclass=ABCMeta):
     def catalog_filter_sort(
         self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
     ) -> list[GameInfoDTOResponse]:
-        ...
+        pass
 
     @abstractmethod
     def set_like_game_info_by_uuid(
         self, uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
-        ...
+        pass
 
     @abstractmethod
     def unset_like_game_info_by_uuid(
         self, uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
-        ...
+        pass
 
     @abstractmethod
     def get_statistics_on_the_site(self) -> StatisticsOnTheSiteDTOResponse:
-        ...
+        pass
