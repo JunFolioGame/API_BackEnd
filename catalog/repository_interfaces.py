@@ -42,7 +42,7 @@ class AbstractGameInfoRepositoryInterface(metaclass=ABCMeta):
     def set_like_game_info_by_uuid(
         self, game_info_uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
-        ...
+        pass
 
     @abstractmethod
     def unset_like_game_info_by_uuid(

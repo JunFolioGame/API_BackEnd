@@ -69,7 +69,7 @@ class ProjectContainer(containers.DeclarativeContainer):
         gallery_service=ServiceContainer.gallery_service,
         additional_service=AdditionalServiceContainer.additional_service,
     )
-    game_session_interactor: providers.Provider[GameSessionInteractor] =(
+    game_session_interactor: providers.Provider[GameSessionInteractor] = (
         providers.Factory(
             GameSessionInteractor, service=ServiceContainer.game_session_service
         )

@@ -2,19 +2,16 @@ from uuid import UUID
 
 from annoying.functions import get_object_or_None
 from django.db import transaction
-from django.db.models import F
 
 from catalog.dto import (
     CreateGameInfoDTO,
     FilterSortGameInfoDTORequest,
     GameInfoDTOResponse,
     UpdateGameInfoDTORequest,
-    StatisticsOnTheSiteDTOResponse,
 )
 from catalog.exceptions import GameInfoDoesNotExist
 from catalog.models import GameInfo, Like
 from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
-from game_session.models import GameSession
 
 
 class GameInfoRepository(AbstractGameInfoRepositoryInterface):
@@ -116,22 +113,7 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
         )
 
     def get_statistics_on_the_site(self) -> int:
-        1 == 1
         return GameInfo.objects.all().count()
-
-        # played = GameSession.objects.all().count()
-        # number_of_teams = GameSession.objects.all().aggregate()
-        # from django.db.models import Sum, Count, Q
-        #
-        # result = GameSession.objects.aggregate(
-        #     number_of_teams=Sum("final_teams"),
-        #     played=Count("pk", filter=Q(is_active=False)),
-        # )
-        # return StatisticsOnTheSiteDTOResponse(number_of_games=number_of_games)
-        #
-        # return self._instance_model_to_dto_model(
-        #     dto_model=StatisticsOnTheSiteDTOResponse, instance_model=result
-        # )
 
     @staticmethod
     def _instance_model_to_dto_model(dto_model, instance_model, *args, **kwargs):

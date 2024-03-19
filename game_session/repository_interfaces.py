@@ -27,4 +27,4 @@ class AbstractGameSessionRepositoryInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def get_statistics_session(self) -> StatisticsSessionDTOResponse:
-        ...
+        pass

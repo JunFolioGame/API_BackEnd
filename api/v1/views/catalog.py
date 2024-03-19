@@ -761,7 +761,7 @@ class APIStatisticInfoView(APIView, ApiBaseView):
     @swagger_auto_schema(
         operation_description="""
         Get statistics about games on the site
-
+.
         Parameters:
          - `none`
 
@@ -769,12 +769,12 @@ class APIStatisticInfoView(APIView, ApiBaseView):
            - 200: Returns event request data.
                 - data (dict[str, int]): Processing result.
            - 400: Error response for invalid request.
-           
+.
         Example of request:
             curl -X 'GET' \
               'http://127.0.0.1:8000/api/v1/game_info/statistic/' \
               -H 'accept: application/json'
-              
+.
         Example of successful processing:
 
         {
