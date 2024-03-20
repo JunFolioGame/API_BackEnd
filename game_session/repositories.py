@@ -2,6 +2,8 @@ from uuid import UUID
 
 from annoying.functions import get_object_or_None
 from django.db.models import Count, Sum, Q
+from django.db.models.functions import Coalesce
+from django.db import models
 
 from game_session.dto import (
     CreateGameSessionDTO,
@@ -113,8 +115,11 @@ class GameSessionRepository(AbstractGameSessionRepositoryInterface):
         )
 
     def get_statistics_session(self) -> StatisticsSessionDTOResponse:
-        result = GameSession.objects.aggregate(
-            played=Count("pk", filter=Q(is_active=False)),
-            number_of_teams=Sum("final_teams"),
-        )
+        try:
+            result = GameSession.objects.aggregate(
+                number_of_teams=Coalesce(Sum("final_teams"), 0),
+                played=Coalesce(Count("pk", filter=Q(is_active=False)), 0),
+            )
+        except models.ObjectDoesNotExist:
+            result = {"played": 0, "number_of_teams": 0}
         return StatisticsSessionDTOResponse(**result)
