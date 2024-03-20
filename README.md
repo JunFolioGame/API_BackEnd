@@ -1,6 +1,6 @@
 # API_BackEnd
 
-Before start, you need to create file .env and copy all from .env_example
+ Before start, you need to create file .env and copy all from .env_example
 
 1. Go to your project folder and use command "docker-compose -f docker-compose_dev.yml up --build"
 2. To remove data from database you need to run "docker-compose -f docker-compose_dev.yml rm" that command 
