@@ -12,6 +12,7 @@ from api.v1.schemas.base_schema import error_response, successful_response_witho
 from api.v1.schemas.catalog import (
     created_game_info_response_schema,
     list_of_game_info_response_schema,
+    statistics_on_the_site_response_schema,
 )
 from api.v1.serializers.catalog import (
     CreateGameInfoDTOSerializer,
@@ -745,6 +746,65 @@ class APIGameInfoUnlikeView(APIView, ApiBaseView):
                 "status": "Success",
                 "message": message,
                 "data": data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class APIStatisticInfoView(APIView, ApiBaseView):
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.FileUploadParser,
+    )
+
+    @swagger_auto_schema(
+        operation_description="""
+        Get statistics about games on the site
+.
+        Parameters:
+         - `none`
+
+        Returns:
+           - 200: Returns event request data.
+                - data (dict[str, int]): Processing result.
+           - 400: Error response for invalid request.
+.
+        Example of request:
+            curl -X 'GET' \
+              'http://127.0.0.1:8000/api/v1/game_info/statistic/' \
+              -H 'accept: application/json'
+.
+        Example of successful processing:
+
+        {
+          "status": "Success",
+          "message": "Successful get statistics about games on the site",
+          "data": {
+            "played": 2,
+            "number_of_teams": 4,
+            "number_of_games": 1
+          }
+        }
+        """,
+        responses={
+            200: openapi.Response(
+                "Statistics about games on the site",
+                statistics_on_the_site_response_schema,
+            ),
+        },
+        tags=["GameInfo"],
+    )
+    def get(self, request: Request):
+        """Statistics On The Site"""
+        game_info_interactor = GameInfoContainer.game_info_interactor()
+        statistics_on_the_site = game_info_interactor.get_statistics_on_the_site()
+        serialized_statistics_on_the_site = statistics_on_the_site.model_dump()
+        return Response(
+            {
+                "status": "Success",
+                "message": "Successful get statistics about games on the site",
+                "data": serialized_statistics_on_the_site,
             },
             status=status.HTTP_200_OK,
         )

@@ -7,6 +7,7 @@ from catalog.dto import (
     FilterSortGameInfoDTORequest,
     GameInfoDTOResponse,
     UpdateGameInfoDTORequest,
+    StatisticsOnTheSiteDTOResponse,
 )
 from catalog.services_interfaces import GameInfoServiceInterface
 
@@ -82,3 +83,6 @@ class GameInfoInteractor:
         return self.game_info_service.unset_like_game_info_by_uuid(
             game_info_uuid, player_uuid
         )
+
+    def get_statistics_on_the_site(self) -> StatisticsOnTheSiteDTOResponse:
+        return self.game_info_service.get_statistics_on_the_site()

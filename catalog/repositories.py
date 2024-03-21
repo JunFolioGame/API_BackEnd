@@ -112,6 +112,9 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
             dto_model=GameInfoDTOResponse, instance_model=game_info
         )
 
+    def get_statistics_on_the_site(self) -> int:
+        return GameInfo.objects.all().count()
+
     @staticmethod
     def _instance_model_to_dto_model(dto_model, instance_model, *args, **kwargs):
         dto_kwarg = {**kwargs}

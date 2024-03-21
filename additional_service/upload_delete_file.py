@@ -5,7 +5,6 @@ from additional_service.services_interfaces import AdditionalServiceInterface
 
 
 class AdditionalService(AdditionalServiceInterface):
-
     def upload_file_to_s3(self, group_name: str, object_name: str, bytesio_file) -> str:
         # Генеруємо ім'я файлу для зображення
         filename = f"{object_name}_{bytesio_file.name}"
@@ -18,7 +17,10 @@ class AdditionalService(AdditionalServiceInterface):
             os.makedirs(image_directory)
         else:
             # якщо папка вже існує, то напевне там є малюнки
-            filename = f"{filename[:-4]}_{int(time.time())}{filename[-4:]}"
+            if filename[-4:] == "jpeg":
+                filename = f"{filename[:-5]}_{int(time.time())}{filename[-5:]}"
+            else:
+                filename = f"{filename[:-4]}_{int(time.time())}{filename[-4:]}"
 
         # Завантажуємо зображення
         raw_file = bytesio_file.file

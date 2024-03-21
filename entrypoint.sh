@@ -13,16 +13,5 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py test
 python manage.py createsuperuser --no-input
-# TODO uncomment after added a User model and delete
-#python manage.py createsuperuser --username=admin --email=admin@example.com
-
-#python manage.py shell <<EOF
-#from django.contrib.auth import get_user_model
-#from accounts.models import Profile
-#User = get_user_model()
-#if not User.objects.filter(username='admin').exists():
-#    user = User.objects.create_superuser('admin@example.com', 'admin', 'John', 'Doe', 'admin')
-#    Profile.objects.create(user=user, gender='male', date_of_birth='2003-05-31', bio='biography', info='info')
-#EOF
 
 gunicorn -c gunicorn.py core.wsgi:application

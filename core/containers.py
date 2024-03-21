@@ -38,7 +38,9 @@ class ServiceContainer(containers.DeclarativeContainer):
         DeveloperService, repository=RepositoryContainer.developer_repository
     )
     game_info_service = providers.Factory(
-        GameInfoService, repository=RepositoryContainer.game_info_repository
+        GameInfoService,
+        game_info_repository=RepositoryContainer.game_info_repository,
+        game_session_repository=RepositoryContainer.game_session_repository,
     )
     gallery_service = providers.Factory(
         GalleryService, repository=RepositoryContainer.gallery_repository

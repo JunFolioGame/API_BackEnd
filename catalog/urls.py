@@ -6,11 +6,13 @@ from api.v1.views.catalog import (
     APIGameInfoLikeView,
     APIGameInfoUnlikeView,
     ApiGameInfoView,
+    APIStatisticInfoView,
 )
 
 app_name = "catalog"
 
 urlpatterns = [
+    path("statistic/", APIStatisticInfoView.as_view(), name="catalog_statistic"),
     path("all/", APIAllGameInfoView.as_view(), name="catalog_all_game_info"),
     path("<uuid:uuid>/", ApiGameInfoView.as_view(), name="game_info"),
     path("<uuid:uuid>/like/", APIGameInfoLikeView.as_view(), name="game_info_like"),
