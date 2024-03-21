@@ -68,12 +68,8 @@ class ApiPlayerView(APIView, ApiBaseView):
         player_serializer = UpdatePlayerDTOSerializer(data=request.data)
         if not player_serializer.is_valid():
             return self._create_response_for_invalid_serializers(player_serializer)
-        api_adress = request.META.get("REMOTE_ADDR")
-        browser_info = request.META.get("HTTP_USER_AGENT")
         try:
             player_dto = PlayerDTO(
-                api_adress=api_adress,
-                browser_info=browser_info,
                 player_uuid=player_uuid,
                 username=player_serializer.validated_data.get("username"),
             )
@@ -94,6 +90,4 @@ class ApiPlayerView(APIView, ApiBaseView):
             },
             status=status.HTTP_200_OK,
         )
-        response.set_cookie("PLAYER_UUID", player.player_uuid)
-        response.set_cookie("PLAYER_USERNAME", player.username)
         return response
