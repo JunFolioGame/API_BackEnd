@@ -32,9 +32,10 @@ class AdditionalService(AdditionalServiceInterface):
         with open(image_path, "wb") as image_file:
             image_file.write(raw_file.read())
         print(f"Зображення збережено: {image_path}")
-        return image_path
+        return image_path[1:]  # фронт не хоче крапки на початку
 
     def delete_file_from_s3(self, photo_url: str) -> None:
+        photo_url = f".{photo_url}"
         try:
             if os.path.isfile(photo_url):
                 os.remove(photo_url)

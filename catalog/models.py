@@ -24,7 +24,7 @@ class GameInfo(CoreModel):
 
     name_ua = models.TextField("Назва ua", max_length=50, unique=True)
     name_en = models.TextField("Назва en", max_length=50, unique=True)
-    photo = models.CharField(max_length=255, verbose_name="Зображння")
+    photo = models.CharField(max_length=255, verbose_name="Зображення")
     description_ua = models.TextField("Опис ua")
     description_en = models.TextField("Опис en")
     is_team = models.BooleanField("Командна", default=False)
