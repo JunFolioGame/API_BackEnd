@@ -52,7 +52,10 @@ SECRET_KEY = "django-insecure-l$k31u&a$^juyqwv21gspx^cp%c1+!0!#(#p6!c6od7ukjgooi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["http://localhost:8000", "http://localhost:7777", "https://localhost:3001",
+    "http://localhost:3000", "https://api-backend.naratyv-creative.fun", "*"
+]
+
 
 
 # Application definition
@@ -230,8 +233,8 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+CORS_ALLOWED_ORIGINS = ["http://localhost:8000", "http://localhost:7777", "https://localhost:3001",
+    "http://localhost:3000", "https://api-backend.naratyv-creative.fun"
 ]
 
 SWAGGER_SETTINGS = {
@@ -242,6 +245,9 @@ SWAGGER_SETTINGS = {
     },
 }
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 REDIS_HOST = os.getenv("REDIS_HOST", "redis_container_service")
 REDIS_PORT = os.getenv("REDIS_PORT", 6379)
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
@@ -250,3 +256,33 @@ CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 
 DEFAULT_CHARSET = "utf-8"
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://localhost:7777", "https://localhost:3001",
+    "http://localhost:3000", "https://api-backend.naratyv-creative.fun"
+]
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
