@@ -14,6 +14,10 @@ class AbstractGalleryRepositoryInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def get_gallery_by_uuid(self, gallery_uuid: UUID) -> GalleryDTO:
+        pass
+
+    @abstractmethod
     def set_like_gallery_item_by_uuid(
         self, gallery_uuid: UUID, player_uuid: UUID
     ) -> GalleryDTO:

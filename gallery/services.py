@@ -15,6 +15,9 @@ class GalleryService(AbstractGalleryServiceInterface):
     def get_gallery(self, game_uuid: UUID) -> list[GalleryDTO]:
         return self.repository.get_gallery(game_uuid=game_uuid)
 
+    def get_gallery_by_uuid(self, gallery_uuid: UUID) -> GalleryDTO:
+        return self.repository.get_gallery_by_uuid(gallery_uuid=gallery_uuid)
+
     def set_like_gallery_item_by_uuid(
         self, gallery_uuid: UUID, player_uuid: UUID
     ) -> GalleryDTO:

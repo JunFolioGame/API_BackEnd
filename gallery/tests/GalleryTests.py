@@ -121,6 +121,36 @@ class GalleryTests(APITestCase):
         self.assertEqual(item2["gallery_uuid"], self.gallery1_uuid)
         self.assertEqual(item2["likes"], 0)
 
+    # --------------------------------------RETRIEVE GALLERY----------------------------
+    def test_gallery_retrieve_wrong_not_found(self):
+
+        while True:
+            random_uuid = uuid4()
+            if random_uuid not in [self.gallery1_uuid, self.gallery2_uuid]:
+                break
+
+        response = self.client.get(self.url + "item/" + str(random_uuid))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        data = response.data
+        self.assertEqual(data["status"], "failed")
+        self.assertEqual(data["message"], "GalleryItem doesn't exist")
+
+    def test_gallery_retrieve_success(self):
+        response = self.client.get(self.url + "item/" + str(self.gallery1_uuid))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.data
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data["message"], "Successful get gallery item")
+
+        gallery = data["data"]
+        self.assertEqual(gallery["topic"], "Тема")
+        self.assertEqual(gallery["photo"], "Фото 2")
+        self.assertEqual(gallery["team_name"], "Команда")
+        self.assertEqual(gallery["gallery_uuid"], self.gallery1_uuid)
+        self.assertEqual(gallery["likes"], 0)
+
     # --------------------------------------CREATE GALLERY------------------------------
     def test_gallery_create_wrong_empty(self):
         create_data = {}

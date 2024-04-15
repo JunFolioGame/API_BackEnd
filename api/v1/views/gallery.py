@@ -124,6 +124,64 @@ class ApiGetCreateGalleryView(APIView, ApiBaseView, TenItemsPagination):
         )
 
 
+class ApiRetrieveGalleryView(APIView, ApiBaseView):
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+    )
+
+    @swagger_auto_schema(
+        operation_description="Get gallery's detailed info by UUID",
+        manual_parameters=[
+            openapi.Parameter(
+                "gallery_uuid",
+                in_=openapi.IN_PATH,
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_UUID,
+            )
+        ],
+        responses={
+            200: openapi.Response(
+                "Get gallery information by UUID", created_gallery_response_schema
+            ),
+            400: error_response,
+        },
+        tags=["Gallery"],
+    )
+    def get(self, request: Request, gallery_uuid: UUID):
+        gallery_interactor = GalleryContainer.gallery_interactor()
+
+        try:
+            gallery_dto = gallery_interactor.get_gallery_by_uuid(
+                gallery_uuid=gallery_uuid
+            )
+        except GalleryItemDoesNotExist as exception:
+            return self._create_response_not_found(exception)
+
+        gallery_serialized_data = gallery_dto.model_dump()
+        return Response(
+            {
+                "status": "success",
+                "message": "Successful get gallery item",
+                "data": gallery_serialized_data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @staticmethod
+    def _create_response_for_successful_get_gallery(
+        gallery_serialized_data,
+    ) -> Response:
+        return Response(
+            {
+                "status": "success",
+                "message": "Successful get gallery items",
+                "data": gallery_serialized_data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class ApiLikeGalleryView(APIView, ApiBaseView):
     parser_classes = (
         parsers.FormParser,
