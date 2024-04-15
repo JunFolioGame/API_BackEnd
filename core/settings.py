@@ -52,10 +52,14 @@ SECRET_KEY = "django-insecure-l$k31u&a$^juyqwv21gspx^cp%c1+!0!#(#p6!c6od7ukjgooi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["http://localhost:8000", "http://localhost:7777", "https://localhost:3001",
-    "http://localhost:3000", "https://api-backend.naratyv-creative.fun", "*"
+ALLOWED_HOSTS = [
+    "http://localhost:8000",
+    "http://localhost:7777",
+    "https://localhost:3001",
+    "http://localhost:3000",
+    "https://api-backend.naratyv-creative.fun",
+    "*",
 ]
-
 
 
 # Application definition
@@ -233,8 +237,12 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
 }
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:8000", "http://localhost:7777", "https://localhost:3001",
-    "http://localhost:3000", "https://api-backend.naratyv-creative.fun"
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:7777",
+    "https://localhost:3001",
+    "http://localhost:3000",
+    "https://api-backend.naratyv-creative.fun",
 ]
 
 SWAGGER_SETTINGS = {
@@ -246,7 +254,7 @@ SWAGGER_SETTINGS = {
 }
 
 USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis_container_service")
 REDIS_PORT = os.getenv("REDIS_PORT", 6379)
@@ -257,8 +265,12 @@ CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 
 DEFAULT_CHARSET = "utf-8"
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://localhost:7777", "https://localhost:3001",
-    "http://localhost:3000", "https://api-backend.naratyv-creative.fun"
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:7777",
+    "https://localhost:3001",
+    "http://localhost:3000",
+    "https://api-backend.naratyv-creative.fun",
 ]
 
 
@@ -285,4 +297,3 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
-
