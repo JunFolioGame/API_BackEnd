@@ -5,8 +5,8 @@ from rest_framework.exceptions import ValidationError
 class CreateGameInfoDTOSerializer(serializers.Serializer):
     name_ua = serializers.CharField(max_length=50)
     name_en = serializers.CharField(max_length=50)
-    description_ua = serializers.CharField(max_length=50)
-    description_en = serializers.CharField(max_length=50)
+    description_ua = serializers.CharField(max_length=255)
+    description_en = serializers.CharField(max_length=255)
     members = serializers.IntegerField()
     photo_jpeg = serializers.ImageField()
     is_team = serializers.BooleanField(required=False, allow_null=True, default=False)
