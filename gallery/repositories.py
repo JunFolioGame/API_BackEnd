@@ -36,6 +36,12 @@ class GalleryRepository(AbstractGalleryRepositoryInterface):
             for item in game.gallery.all().order_by("-vote__number")
         ]
 
+    def get_gallery_by_uuid(self, gallery_uuid: UUID) -> GalleryDTO:
+        gallery = get_object_or_None(GalleryItem, uuid=gallery_uuid)
+        if not gallery:
+            raise GalleryItemDoesNotExist()
+        return self._gallery_to_dto(gallery=gallery)
+
     def set_like_gallery_item_by_uuid(
         self, gallery_uuid: UUID, player_uuid: UUID
     ) -> GalleryDTO:
