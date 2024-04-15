@@ -53,7 +53,7 @@ class GameSessionRepository(AbstractGameSessionRepositoryInterface):
     ) -> GameSessionDTO:
         game_session = (
             GameSession.objects.filter(
-                identificator=session_identificator,  # creator=creator_uuid  # TODO uncomment when testing end
+                identificator=session_identificator,  # creator=creator_uuid # TODO del
             )
             .prefetch_related("lobby")
             .first()
