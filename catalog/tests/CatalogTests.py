@@ -74,12 +74,12 @@ class CatalogTests(APITestCase):
         assert response.data["status"] == "success"
         assert response.data["message"] == "Successful game_info creation"
 
-        self.assertEqual(response.data["name_ua"], "Test Name UA 2")
-        self.assertEqual(response.data["name_en"], "Test Name EN 2")
-        self.assertEqual(response.data["photo_jpeg"], self.photo_jpeg)
-        self.assertEqual(response.data["description_ua"], "Test Description UA 2")
-        self.assertEqual(response.data["description_en"], "Test Description EN 2")
-        self.assertEqual(response.data["members"], 10)
+        game = response.data["data"]
+        self.assertEqual(game["name_ua"], "Test Name UA 2")
+        self.assertEqual(game["name_en"], "Test Name EN 2")
+        self.assertEqual(game["description_ua"], "Test Description UA 2")
+        self.assertEqual(game["description_en"], "Test Description EN 2")
+        self.assertEqual(game["members"], 10)
 
     # Negative test case for APICreateGameInfoView post method
     def test_create_game_info_failure_invalid_data(self):
@@ -92,15 +92,11 @@ class CatalogTests(APITestCase):
             "members": 10,
         }
         response = self.client.post("/api/v1/game_info/", data=data)
-        # assert response.status_code == 400
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
 
-        self.assertEqual(response.data["name_ua"], 1)
-        self.assertEqual(response.data["name_en"], "Test Name EN")
-        self.assertEqual(response.data["description_ua"], "Test Description UA 2")
-        self.assertEqual(response.data["description_en"], "Test Description EN 2")
-        self.assertEqual(response.data["members"], 10)
+
 
     # Positive test case for ApiGameInfoView get method
     def test_get_game_info_success(self):
@@ -110,12 +106,23 @@ class CatalogTests(APITestCase):
         assert response.data["status"] == "success"
         assert response.data["message"] == "Successful get game_info information"
 
+        game = response.data["data"]
+        self.assertEqual(game["name_ua"], "Test Name UA")
+        self.assertEqual(game["name_en"], "Test Name EN")
+        self.assertEqual(game["description_ua"], "Test Description UA")
+        self.assertEqual(game["description_en"], "Test Description EN")
+        self.assertEqual(game["photo"], "test.jpg")
+        self.assertEqual(game["is_team"], False)
+        self.assertEqual(game["members"], 10)
+
+
     # Negative test case for ApiGameInfoView get method
     def test_get_game_info_failure_not_found(self):
         uuid = "invalid-uuid"
         response = self.client.get(f"/api/v1/game_info/{uuid}/")
-        # assert response.status_code == 404
+
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
     # Positive test case for ApiGameInfoView put method
     def test_update_game_info_success(self):
@@ -134,12 +141,14 @@ class CatalogTests(APITestCase):
         assert response.data["status"] == "success"
         assert response.data["message"] == "Successful update game_info information"
 
-        self.assertEqual(response.data["name_ua"], "Updated Name UA")
-        self.assertEqual(response.data["name_en"], "Updated Name EN")
-        self.assertEqual(response.data["photo_jpeg"], self.photo_jpeg)
-        self.assertEqual(response.data["description_ua"], "Updated Description UA")
-        self.assertEqual(response.data["description_en"], "Updated Description EN")
-        self.assertEqual(response.data["members"], 20)
+        game = response.data["data"]
+        self.assertEqual(game["name_ua"], "Updated Name UA")
+        self.assertEqual(game["name_en"], "Updated Name EN")
+        self.assertEqual(game["description_ua"], "Updated Description UA")
+        self.assertEqual(game["description_en"], "Updated Description EN")
+        self.assertEqual(game["is_team"], True)
+        self.assertEqual(game["is_active"], False)
+        self.assertEqual(game["members"], 20)
 
     # Negative test case for ApiGameInfoView put method
     def test_update_game_info_failure_not_found(self):
@@ -153,14 +162,10 @@ class CatalogTests(APITestCase):
             "members": 20,
         }
         response = self.client.put(f"/api/v1/game_info/{uuid}/", data=data)
-        # assert response.status_code == 404
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["name_ua"], "Updated Name UA")
-        self.assertEqual(response.data["name_en"], "Updated Name EN")
-        self.assertEqual(response.data["description_ua"], "Updated Description UA")
-        self.assertEqual(response.data["description_en"], "Updated Description EN")
-        self.assertEqual(response.data["members"], 20)
+
+
 
     # Positive test case for ApiGameInfoView delete method
     def test_delete_game_info_success(self):
@@ -170,13 +175,10 @@ class CatalogTests(APITestCase):
         assert response.data["status"] == "success"
         assert response.data["message"] == "Successful delete game_info."
 
-        self.assertEqual(self.game_info_uuid, None)
-
     # Negative test case for ApiGameInfoView delete method
     def test_delete_game_info_failure_not_found(self):
         uuid = "invalid-uuid"
         response = self.client.delete(f"/api/v1/game_info/{uuid}/")
-        # assert response.status_code == 404
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -187,6 +189,16 @@ class CatalogTests(APITestCase):
         assert response.data["status"] == "Success"
         assert response.data["message"] == "Successful get list of all game_info"
 
+        game = response.data["data"][0]
+        self.assertEqual(game["name_ua"], "Test Name UA")
+        self.assertEqual(game["name_en"], "Test Name EN")
+        self.assertEqual(game["description_ua"], "Test Description UA")
+        self.assertEqual(game["description_ua"], "Test Description UA")
+        self.assertEqual(game["description_en"], "Test Description EN")
+        self.assertEqual(game["is_team"], False)
+        self.assertEqual(game["is_active"], False)
+        self.assertEqual(game["members"], 10)
+
     def test_get_statistics_on_the_site(self):
         response = self.client.get("/api/v1/game_info/statistic/")
         assert response.status_code == 200
@@ -195,6 +207,12 @@ class CatalogTests(APITestCase):
                 response.data["message"]
                 == "Successful get statistics about games on the site"
         )
+
+        game = response.data["data"]
+        self.assertEqual(game["played"], 0)
+        self.assertEqual(game["number_of_teams"], 3)
+        self.assertEqual(game["number_of_games"], 1)
+
 
     def test_get_statistics_on_the_site_success(self):
         response = self.client.get("/api/v1/game_info/statistic/")
@@ -232,3 +250,6 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["data"]["played"], 0)
         self.assertEqual(response.data["data"]["number_of_games"], 0)
         self.assertEqual(response.data["data"]["number_of_teams"], 3)
+
+
+
