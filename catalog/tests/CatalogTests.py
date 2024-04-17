@@ -15,6 +15,9 @@ from players.repositories import PlayerRepository
 
 class CatalogTests(APITestCase):
     def setUp(self):
+
+
+
         with open(
                 os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
         ) as photo_file:
@@ -252,4 +255,70 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["data"]["number_of_teams"], 3)
 
 
+    def test_create_category_wrong_empty(self):
+        create_data = {}
+        response = self.client.post("/api/v1/game_info/", data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
+
+    def test_category_create_wrong_name_ua_required(self):
+        create_data = {
+            "name_en": "test_2",
+            "description_ua": "test_2",
+            "description_en": "test_2",
+            "is_active": True,
+        }
+
+        response = self.client.post("/api/v1/game_info/", data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
+
+    def test_create_category_wrong_name_en_required(self):
+        create_data = {
+            "name_ua": "test_2",
+            "description_ua": "test_2",
+            "description_en": "test_2",
+            "is_active": True,
+        }
+
+        response = self.client.post("/api/v1/game_info/", data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
+
+    def test_create_category_wrong_description_ua_required(self):
+        create_data = {
+            "name_ua": "test_2",
+            "name_en": "test_2",
+            "description_en": "test_2",
+            "is_active": True,
+        }
+
+        response = self.client.post("/api/v1/game_info/", data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
+
+    def test_create_category_wrong_description_en_required(self):
+        create_data = {
+            "name_ua": "test_2",
+            "name_en": "test_2",
+            "description_ua": "test_2",
+            "is_active": True,
+        }
+
+        response = self.client.post("/api/v1/game_info/", data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
+
+    def test_create_category_wrong_bad_photo(self):
+        create_data = {
+            "name_ua": "test_2",
+            "name_en": "test_2",
+            "description_ua": "test_2",
+            "description_en": "test_2",
+            "is_active": True,
+            "photo_jpeg": self.wrong_photo_jpeg,
+        }
+        response = self.client.post("/api/v1/game_info/", data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
 
