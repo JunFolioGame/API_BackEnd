@@ -12,7 +12,7 @@ class GalleryItem(models.Model):
     """Gallery item for the results"""
 
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    text = models.TextField()
+    text = models.TextField(default=None, verbose_name="Опис")
     topic = models.CharField(max_length=255, verbose_name="Тема гри")
     photo = models.CharField(max_length=255, verbose_name="Зображення")
     game = models.ForeignKey(GameInfo, on_delete=models.CASCADE, related_name="gallery")
