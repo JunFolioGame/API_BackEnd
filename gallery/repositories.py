@@ -18,6 +18,7 @@ class GalleryRepository(AbstractGalleryRepositoryInterface):
         try:
             gallery_object, _ = GalleryItem.objects.get_or_create(
                 topic=gallery.topic,
+                text=gallery.text,
                 photo=gallery.photo,
                 team_name=gallery.team_name,
                 game=GameInfo(uuid=gallery.game),
@@ -71,6 +72,7 @@ class GalleryRepository(AbstractGalleryRepositoryInterface):
     def _gallery_to_dto(self, gallery: GalleryItem) -> GalleryDTO:
         return GalleryDTO(
             topic=gallery.topic,
+            text=gallery.text,
             photo=gallery.photo,
             team_name=gallery.team_name,
             gallery_uuid=gallery.uuid,

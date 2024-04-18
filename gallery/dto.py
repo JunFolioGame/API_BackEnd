@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class GalleryDTO(BaseModel):
     topic: str
+    text: str
     photo: str
     team_name: str
     gallery_uuid: UUID

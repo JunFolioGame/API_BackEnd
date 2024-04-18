@@ -54,7 +54,11 @@ class GalleryTests(APITestCase):
         gallery_repository = GalleryRepository()
         gallery1 = gallery_repository.create_gallery(
             CreateGalleryDTO(
-                topic="Тема", photo="Фото 2", team_name="Команда", game=self.game_uuid
+                topic="Тема",
+                text="TextTextText",
+                photo="Фото 2",
+                team_name="Команда",
+                game=self.game_uuid,
             )
         )
         self.gallery1_uuid = gallery1.gallery_uuid
@@ -62,6 +66,7 @@ class GalleryTests(APITestCase):
         gallery2 = gallery_repository.create_gallery(
             CreateGalleryDTO(
                 topic="Тема 2",
+                text="Text2Text2Text2",
                 photo="Фото 3",
                 team_name="Команда 2",
                 game=self.game_uuid,
@@ -95,7 +100,7 @@ class GalleryTests(APITestCase):
         self.assertEqual(data["status"], "failed")
         self.assertEqual(data["message"], "GameInfo doesn't exist")
 
-    def test_developer_list_success(self):
+    def test_gallery_list_success(self):
 
         response = self.client.get(
             self.url + str(self.game_uuid),
@@ -109,6 +114,10 @@ class GalleryTests(APITestCase):
 
         item1 = data["data"][0]
         self.assertEqual(item1["topic"], "Тема 2")
+        self.assertEqual(
+            item1["text"],
+            "Text2Text2Text2",
+        )
         self.assertEqual(item1["photo"], "Фото 3")
         self.assertEqual(item1["team_name"], "Команда 2")
         self.assertEqual(item1["gallery_uuid"], self.gallery2_uuid)
@@ -116,6 +125,7 @@ class GalleryTests(APITestCase):
 
         item2 = data["data"][1]
         self.assertEqual(item2["topic"], "Тема")
+        self.assertEqual(item2["text"], "TextTextText")
         self.assertEqual(item2["photo"], "Фото 2")
         self.assertEqual(item2["team_name"], "Команда")
         self.assertEqual(item2["gallery_uuid"], self.gallery1_uuid)
@@ -146,6 +156,7 @@ class GalleryTests(APITestCase):
 
         gallery = data["data"]
         self.assertEqual(gallery["topic"], "Тема")
+        self.assertEqual(gallery["text"], "TextTextText")
         self.assertEqual(gallery["photo"], "Фото 2")
         self.assertEqual(gallery["team_name"], "Команда")
         self.assertEqual(gallery["gallery_uuid"], self.gallery1_uuid)
@@ -160,6 +171,17 @@ class GalleryTests(APITestCase):
 
     def test_gallery_create_wrong_topic_required(self):
         create_data = {
+            "text": "TEXTEXTTEXT",
+            "photo_jpeg": self.photo_jpeg,
+            "team_name": "Команда 2",
+        }
+        response = self.client.post(self.url + str(self.game_uuid), data=create_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["status"], "failed")
+
+    def test_gallery_create_wrong_text_required(self):
+        create_data = {
+            "topic": "Tема 2",
             "photo_jpeg": self.photo_jpeg,
             "team_name": "Команда 2",
         }
@@ -170,6 +192,7 @@ class GalleryTests(APITestCase):
     def test_gallery_create_wrong_photo_jpeg_required(self):
         create_data = {
             "topic": "Тема 2",
+            "text": "TEXTEXTTEXT",
             "team_name": "Команда 2",
         }
         response = self.client.post(self.url + str(self.game_uuid), data=create_data)
@@ -179,6 +202,7 @@ class GalleryTests(APITestCase):
     def test_gallery_create_wrong_team_name_required(self):
         create_data = {
             "topic": "Тема 2",
+            "text": "TEXTEXTTEXT",
             "photo_jpeg": self.photo_jpeg,
         }
         response = self.client.post(self.url + str(self.game_uuid), data=create_data)
@@ -188,6 +212,7 @@ class GalleryTests(APITestCase):
     def test_gallery_create_wrong_bad_photo(self):
         create_data = {
             "topic": "Тема 2",
+            "text": "TEXTEXTTEXT",
             "photo_jpeg": self.wrong_photo_jpeg,
             "team_name": "Команда 2",
         }
@@ -200,6 +225,7 @@ class GalleryTests(APITestCase):
     def test_gallery_create_success(self):
         create_data = {
             "topic": "Тема 2",
+            "text": "TEXTEXTTEXT",
             "photo_jpeg": self.photo_jpeg,
             "team_name": "Команда 2",
             "game": self.game_uuid,
@@ -212,6 +238,7 @@ class GalleryTests(APITestCase):
 
         item = data["data"]
         self.assertEqual(item["topic"], "Тема 2")
+        self.assertEqual(item["text"], "TEXTEXTTEXT")
         self.assertEqual(item["team_name"], "Команда 2")
         self.assertEqual(item["likes"], 0)
 
@@ -252,6 +279,7 @@ class GalleryTests(APITestCase):
 
         gallery = data["data"]
         self.assertEqual(gallery["topic"], "Тема 2")
+        self.assertEqual(gallery["text"], "Text2Text2Text2")
         self.assertEqual(gallery["photo"], "Фото 3")
         self.assertEqual(gallery["team_name"], "Команда 2")
         self.assertEqual(gallery["gallery_uuid"], self.gallery2_uuid)
@@ -294,6 +322,7 @@ class GalleryTests(APITestCase):
 
         gallery = data["data"]
         self.assertEqual(gallery["topic"], "Тема 2")
+        self.assertEqual(gallery["text"], "Text2Text2Text2")
         self.assertEqual(gallery["photo"], "Фото 3")
         self.assertEqual(gallery["team_name"], "Команда 2")
         self.assertEqual(gallery["gallery_uuid"], self.gallery2_uuid)
