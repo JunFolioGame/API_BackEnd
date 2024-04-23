@@ -15,9 +15,6 @@ from players.repositories import PlayerRepository
 
 class CatalogTests(APITestCase):
     def setUp(self):
-
-
-
         with open(
                 os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
         ) as photo_file:
@@ -45,6 +42,45 @@ class CatalogTests(APITestCase):
             )
         )
         self.game_info_uuid = self.game_info.uuid
+
+        game1 = repository.create_game_info(
+            CreateGameInfoDTO(
+                name_ua="Game1 Name UA",
+                name_en="Game1 Name EN",
+                photo="test.jpg",
+                description_ua="Game1 Description UA",
+                description_en="Game1 Description EN",
+                is_team=True,
+                members=20,
+            )
+        )
+        self.game1_uuid = game1.uuid
+
+        game2 = repository.create_game_info(
+            CreateGameInfoDTO(
+                name_ua="Game2 Name UA",
+                name_en="Game 2 Name EN",
+                photo="test.jpg",
+                description_ua="Game 2 Description UA",
+                description_en="Game 2 Description EN",
+                is_team=False,
+                members=15,
+            )
+        )
+        self.game2_uuid = game2.uuid
+
+        game3 = repository.create_game_info(
+            CreateGameInfoDTO(
+                name_ua="Game3 Name UA",
+                name_en="Game3 Name EN",
+                photo="test.jpg",
+                description_ua="Game3 Description UA",
+                description_en="Game3 Description EN",
+                is_team=True,
+                members=10,
+            )
+        )
+        self.game3_uuid = game3.uuid
 
         player_repository = PlayerRepository()
 
@@ -99,8 +135,6 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
-
-
     # Positive test case for ApiGameInfoView get method
     def test_get_game_info_success(self):
         uuid = self.game_info_uuid
@@ -118,14 +152,12 @@ class CatalogTests(APITestCase):
         self.assertEqual(game["is_team"], False)
         self.assertEqual(game["members"], 10)
 
-
     # Negative test case for ApiGameInfoView get method
     def test_get_game_info_failure_not_found(self):
         uuid = "invalid-uuid"
         response = self.client.get(f"/api/v1/game_info/{uuid}/")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
     # Positive test case for ApiGameInfoView put method
     def test_update_game_info_success(self):
@@ -167,8 +199,6 @@ class CatalogTests(APITestCase):
         response = self.client.put(f"/api/v1/game_info/{uuid}/", data=data)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
 
     # Positive test case for ApiGameInfoView delete method
     def test_delete_game_info_success(self):
@@ -214,8 +244,7 @@ class CatalogTests(APITestCase):
         game = response.data["data"]
         self.assertEqual(game["played"], 0)
         self.assertEqual(game["number_of_teams"], 3)
-        self.assertEqual(game["number_of_games"], 1)
-
+        self.assertEqual(game["number_of_games"], 4)
 
     def test_get_statistics_on_the_site_success(self):
         response = self.client.get("/api/v1/game_info/statistic/")
@@ -228,7 +257,7 @@ class CatalogTests(APITestCase):
         statistic = data["data"]
         self.assertEqual(statistic["played"], 0)
         self.assertEqual(statistic["number_of_teams"], 3)
-        self.assertEqual(statistic["number_of_games"], 1)
+        self.assertEqual(statistic["number_of_games"], 4)
 
     def test_get_statistics_on_the_site_no_sessions(self):
         # Видалення всіх ігрових сесій
@@ -240,7 +269,7 @@ class CatalogTests(APITestCase):
         self.assertIn("data", response.data)
         self.assertEqual(response.data["data"]["played"], 0)
         self.assertEqual(response.data["data"]["number_of_teams"], 0)
-        self.assertEqual(response.data["data"]["number_of_games"], 1)
+        self.assertEqual(response.data["data"]["number_of_games"], 4)
 
     def test_get_statistics_on_the_site_no_game_info(self):
         # Видалення всіх ігрових описів
@@ -253,7 +282,6 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["data"]["played"], 0)
         self.assertEqual(response.data["data"]["number_of_games"], 0)
         self.assertEqual(response.data["data"]["number_of_teams"], 3)
-
 
     def test_create_category_wrong_empty(self):
         create_data = {}
@@ -322,3 +350,8 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
+    # def test_group_games(self):
+    #     create_data = {"group_or_individual": "group"}
+    #     response = self.client.put("/api/v1/game_info/all/", data=create_data)
+    #     self.assertEqual(response.data["group_or_individual"], "group")
+    #     print(response.data)
