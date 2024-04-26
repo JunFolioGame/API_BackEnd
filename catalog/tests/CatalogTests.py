@@ -52,10 +52,6 @@ class CatalogTests(APITestCase):
                 description_en="Game1 Description EN",
                 is_team=True,
                 members=20,
-                popularity=10,
-                sort_selection='popularity',
-                newness=7,
-                group_or_individual='group'
             )
         )
         self.game1_uuid = game1.uuid
@@ -69,10 +65,6 @@ class CatalogTests(APITestCase):
                 description_en="Game 2 Description EN",
                 is_team=False,
                 members=15,
-                popularity=5,
-                sort_selection='members',
-                newness=3,
-                group_or_individual='individual'
             )
         )
         self.game2_uuid = game2.uuid
@@ -86,10 +78,6 @@ class CatalogTests(APITestCase):
                 description_en="Game3 Description EN",
                 is_team=True,
                 members=10,
-                popularity=2,
-                sort_selection='newness',
-                newness=1,
-                group_or_individual='group'
             )
         )
         self.game3_uuid = game3.uuid
@@ -382,7 +370,7 @@ class CatalogTests(APITestCase):
 
     def test_sort_by_popularity(self):
         popularity_data = {'sort_selection': "popularity"}
-        response = self.client.post('/api/v1/game_info/all/', popularity_data)
+        response = self.client.post('/api/v1/game_info/all/', data=popularity_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], 'Success')
@@ -390,7 +378,7 @@ class CatalogTests(APITestCase):
 
     def test_sort_by_newness(self):
         newness_data = {'sort_selection': 'newness'}
-        response = self.client.post('/api/v1/game_info/all/', newness_data)
+        response = self.client.post('/api/v1/game_info/all/', data=newness_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], 'Success')
@@ -398,7 +386,7 @@ class CatalogTests(APITestCase):
 
     def test_sort_by_members(self):
         members_data = {'sort_selection': 'member'}
-        response = self.client.post('/api/v1/game_info/all/', members_data)
+        response = self.client.post('/api/v1/game_info/all/', data=members_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], 'Success')
