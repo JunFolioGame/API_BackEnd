@@ -16,14 +16,14 @@ from players.repositories import PlayerRepository
 class CatalogTests(APITestCase):
     def setUp(self):
         with open(
-                os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
+            os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
         ) as photo_file:
             self.photo_jpeg = SimpleUploadedFile(
                 "sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
             )
 
         with open(
-                os.path.join(os.path.dirname(__file__), "wrong_sample_photo.jpg"), "rb"
+            os.path.join(os.path.dirname(__file__), "wrong_sample_photo.jpg"), "rb"
         ) as photo_file:
             self.wrong_photo_jpeg = SimpleUploadedFile(
                 "wrong_sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
@@ -237,8 +237,8 @@ class CatalogTests(APITestCase):
         assert response.status_code == 200
         assert response.data["status"] == "Success"
         assert (
-                response.data["message"]
-                == "Successful get statistics about games on the site"
+            response.data["message"]
+            == "Successful get statistics about games on the site"
         )
 
         game = response.data["data"]
@@ -355,39 +355,54 @@ class CatalogTests(APITestCase):
         response = self.client.post("/api/v1/game_info/all/", data=group_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], "Success")
-        self.assertEqual(response.data['message'], "Successfully received an all game info, "
-                                                   "                or with additional filtering and sorted")
+        self.assertEqual(response.data["status"], "Success")
+        self.assertEqual(
+            response.data["message"],
+            "Successfully received an all game info, "
+            "                or with additional filtering and sorted",
+        )
 
     def test_individual_games_filter(self):
         individual_data = {"group_or_individual": "individual"}
         response = self.client.post("/api/v1/game_info/all/", data=individual_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], "Success")
-        self.assertEqual(response.data['message'], "Successfully received an all game info, "
-                                                   "                or with additional filtering and sorted")
+        self.assertEqual(response.data["status"], "Success")
+        self.assertEqual(
+            response.data["message"],
+            "Successfully received an all game info, "
+            "                or with additional filtering and sorted",
+        )
 
     def test_sort_by_popularity(self):
-        popularity_data = {'sort_selection': "popularity"}
-        response = self.client.post('/api/v1/game_info/all/', data=popularity_data)
+        popularity_data = {"sort_selection": "popularity"}
+        response = self.client.post("/api/v1/game_info/all/", data=popularity_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], 'Success')
-        self.assertEqual(response.data['message'], 'Successfully received an all game info,                 or with additional filtering and sorted')
+        self.assertEqual(response.data["status"], "Success")
+        self.assertEqual(
+            response.data["message"],
+            "Successfully received an all game info,                 or with additional filtering and sorted",
+        )
 
     def test_sort_by_newness(self):
-        newness_data = {'sort_selection': 'newness'}
-        response = self.client.post('/api/v1/game_info/all/', data=newness_data)
+        newness_data = {"sort_selection": "newness"}
+        response = self.client.post("/api/v1/game_info/all/", data=newness_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], 'Success')
-        self.assertEqual(response.data['message'], 'Successfully received an all game info,                 or with additional filtering and sorted')
+        self.assertEqual(response.data["status"], "Success")
+        self.assertEqual(
+            response.data["message"],
+            "Successfully received an all game info,                 or with additional filtering and sorted",
+        )
 
     def test_sort_by_members(self):
-        members_data = {'sort_selection': 'member'}
-        response = self.client.post('/api/v1/game_info/all/', data=members_data)
+        members_data = {"sort_selection": "member"}
+        response = self.client.post("/api/v1/game_info/all/", data=members_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['status'], 'Success')
-        self.assertEqual(response.data['message'], 'Successfully received an all game info,                 or with additional filtering and sorted')
+        self.assertEqual(response.data["status"], "Success")
+        self.assertEqual(
+            response.data["message"],
+            "Successfully received an all game info,                 or with additional filtering and sorted",
+        )
