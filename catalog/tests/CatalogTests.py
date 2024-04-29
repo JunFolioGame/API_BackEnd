@@ -16,14 +16,14 @@ from players.repositories import PlayerRepository
 class CatalogTests(APITestCase):
     def setUp(self):
         with open(
-            os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
+                os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
         ) as photo_file:
             self.photo_jpeg = SimpleUploadedFile(
                 "sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
             )
 
         with open(
-            os.path.join(os.path.dirname(__file__), "wrong_sample_photo.jpg"), "rb"
+                os.path.join(os.path.dirname(__file__), "wrong_sample_photo.jpg"), "rb"
         ) as photo_file:
             self.wrong_photo_jpeg = SimpleUploadedFile(
                 "wrong_sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
@@ -51,7 +51,7 @@ class CatalogTests(APITestCase):
                 description_ua="Game1 Description UA",
                 description_en="Game1 Description EN",
                 is_team=True,
-                members=20,
+                members=1,
             )
         )
         self.game1_uuid = game1.uuid
@@ -59,12 +59,12 @@ class CatalogTests(APITestCase):
         game2 = repository.create_game_info(
             CreateGameInfoDTO(
                 name_ua="Game2 Name UA",
-                name_en="Game 2 Name EN",
+                name_en="Game2 Name EN",
                 photo="test.jpg",
                 description_ua="Game 2 Description UA",
                 description_en="Game 2 Description EN",
                 is_team=False,
-                members=15,
+                members=1,
             )
         )
         self.game2_uuid = game2.uuid
@@ -77,7 +77,7 @@ class CatalogTests(APITestCase):
                 description_ua="Game3 Description UA",
                 description_en="Game3 Description EN",
                 is_team=True,
-                members=10,
+                members=5,
             )
         )
         self.game3_uuid = game3.uuid
@@ -237,8 +237,8 @@ class CatalogTests(APITestCase):
         assert response.status_code == 200
         assert response.data["status"] == "Success"
         assert (
-            response.data["message"]
-            == "Successful get statistics about games on the site"
+                response.data["message"]
+                == "Successful get statistics about games on the site"
         )
 
         game = response.data["data"]
@@ -361,6 +361,7 @@ class CatalogTests(APITestCase):
             "Successfully received an all game info, "
             "                or with additional filtering and sorted",
         )
+        self.assertEqual(len(response.data['data']), 2)
 
     def test_individual_games_filter(self):
         individual_data = {"group_or_individual": "individual"}
@@ -373,6 +374,8 @@ class CatalogTests(APITestCase):
             "Successfully received an all game info, "
             "                or with additional filtering and sorted",
         )
+        self.assertEqual(response.data['data'][0]['members'], 1)
+        self.assertEqual(len(response.data['data']), 2)
 
     def test_sort_by_popularity(self):
         popularity_data = {"sort_selection": "popularity"}
@@ -384,6 +387,10 @@ class CatalogTests(APITestCase):
             response.data["message"],
             "Successfully received an all game info,                 or with additional filtering and sorted",
         )
+        self.assertEqual(response.data['data'][0]['name_ua'], "Test Name UA")
+        self.assertEqual(response.data['data'][1]['name_ua'], "Game1 Name UA")
+        self.assertEqual(response.data['data'][2]['name_ua'], "Game2 Name UA")
+        self.assertEqual(response.data['data'][3]['name_ua'], "Game3 Name UA")
 
     def test_sort_by_newness(self):
         newness_data = {"sort_selection": "newness"}
@@ -395,6 +402,9 @@ class CatalogTests(APITestCase):
             response.data["message"],
             "Successfully received an all game info,                 or with additional filtering and sorted",
         )
+        self.assertEqual(response.data['data'][0]['name_ua'], "Game3 Name UA")
+        self.assertEqual(response.data['data'][1]['name_ua'], "Game2 Name UA")
+        self.assertEqual(response.data['data'][2]['name_ua'], "Game1 Name UA")
 
     def test_sort_by_members(self):
         members_data = {"sort_selection": "member"}
@@ -406,3 +416,7 @@ class CatalogTests(APITestCase):
             response.data["message"],
             "Successfully received an all game info,                 or with additional filtering and sorted",
         )
+        self.assertEqual(response.data['data'][0]['name_ua'], "Test Name UA")
+        self.assertEqual(response.data['data'][1]['name_ua'], "Game3 Name UA")
+        self.assertEqual(response.data['data'][2]['name_ua'], "Game1 Name UA")
+        self.assertEqual(response.data['data'][3]['name_ua'], "Game2 Name UA")
