@@ -8,7 +8,7 @@ remove containers. Then use 1 step.
 
 Usage
 
-    The Swagger is accessible at http://localhost:80. Use next credentials user admin, password admin.
+    The Swagger is accessible at http://localhost:80 Use next credentials user admin, password admin.
     PGAdmin is accessible at http://localhost:3333/.
     Redis Commander is accessible at http://localhost:8081/.
     Flower (Celery monitoring tool) is accessible at http://localhost:8082/.
