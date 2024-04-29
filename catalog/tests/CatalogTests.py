@@ -296,6 +296,8 @@ class CatalogTests(APITestCase):
             "description_en": "test_2",
             "is_active": True,
         }
+
+
         response = self.client.post("/api/v1/game_info/", data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
