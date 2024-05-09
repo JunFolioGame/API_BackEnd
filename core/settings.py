@@ -53,6 +53,7 @@ SECRET_KEY = "django-insecure-l$k31u&a$^juyqwv21gspx^cp%c1+!0!#(#p6!c6od7ukjgooi
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "http://localhost:80",
     "http://localhost:8000",
     "http://localhost:7777",
     "https://localhost:3001",
@@ -238,6 +239,7 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:80",
     "http://localhost:8000",
     "http://localhost:7777",
     "https://localhost:3001",
@@ -253,8 +255,8 @@ SWAGGER_SETTINGS = {
     },
 }
 
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# USE_X_FORWARDED_HOST = True
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis_container_service")
 REDIS_PORT = os.getenv("REDIS_PORT", 6379)
@@ -266,6 +268,7 @@ CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 DEFAULT_CHARSET = "utf-8"
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:80",
     "http://localhost:8000",
     "http://localhost:7777",
     "https://localhost:3001",

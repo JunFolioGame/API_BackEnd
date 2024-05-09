@@ -27,10 +27,10 @@ class FilterGameInfoDTOSerializer(CreateGameInfoDTOSerializer):
     name_ua = serializers.CharField(max_length=50, required=False, allow_null=True)
     name_en = serializers.CharField(max_length=50, required=False, allow_null=True)
     description_ua = serializers.CharField(
-        max_length=50, required=False, allow_null=True
+        max_length=255, required=False, allow_null=True
     )
     description_en = serializers.CharField(
-        max_length=50, required=False, allow_null=True
+        max_length=255, required=False, allow_null=True
     )
     members = serializers.IntegerField(required=False, allow_null=True)
     photo = serializers.CharField(required=False, allow_null=True)
