@@ -30,35 +30,30 @@ class GameSessionTests(APITestCase):
 
     # --------------------------------CREATE GAME SESSION-------------------------------
     def test_game_session_create_wrong_team_min_required(self):
-
         create_data = {"team_max": 1, "team_players_min": 1, "team_players_max": 1}
         response = self.client.post(self.url, data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_max_required(self):
-
         create_data = {"team_min": 1, "team_players_min": 1, "team_players_max": 1}
         response = self.client.post(self.url, data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_max_required(self):
-
         create_data = {"team_max": 1, "team_min": 1, "team_players_min": 1}
         response = self.client.post(self.url, data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_min_required(self):
-
         create_data = {"team_max": 1, "team_min": 1, "team_players_max": 1}
         response = self.client.post(self.url, data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_min_too_low(self):
-
         create_data = {
             "team_min": 0,
             "team_max": 1,
@@ -70,7 +65,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_max_too_low(self):
-
         create_data = {
             "team_min": 1,
             "team_max": -1,
@@ -82,7 +76,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_min_too_low(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 1,
@@ -94,7 +87,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_max_too_low(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 1,
@@ -106,7 +98,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_min_too_high(self):
-
         create_data = {
             "team_min": 32768,
             "team_max": 1,
@@ -118,7 +109,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_max_too_high(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 32769,
@@ -130,7 +120,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_min_too_high(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 1,
@@ -142,7 +131,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_max_too_high(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 1,
@@ -154,7 +142,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_min_higher_team_max(self):
-
         create_data = {
             "team_min": 2,
             "team_max": 1,
@@ -166,7 +153,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.data["status"], "failed")
 
     def test_game_session_create_wrong_team_players_min_higher_team_players_max(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 1,
@@ -177,9 +163,7 @@ class GameSessionTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["status"], "failed")
 
-
     def test_game_session_create_success(self):
-
         create_data = {
             "team_min": 1,
             "team_max": 1,
@@ -220,7 +204,6 @@ class GameSessionTests(APITestCase):
         self.assertEqual(data["message"], "GameSession doesn't exist")
 
     def test_game_session_update_success(self):
-
         response = self.client.put(self.url + f"{self.game_session.identificator}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.data

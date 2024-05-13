@@ -445,8 +445,8 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         Parameters for filtering and sorting:
         - `sort_selection` (String): Sorting field, optional. \
             Available values : popularity, newness, member
-        - `members__gt` (Integer): The number of the event, optional. \
-            Available values : group, individual
+        - `group_or_individual` (String): The number of the event, optional. \
+            Available values : group, individual.  "group_or_individual" parameter has higher priority than "members"
 
 
         Returns:
@@ -530,6 +530,9 @@ class APIAllGameInfoView(APIView, ApiBaseView):
         )
         group_or_individual_parameter = {}
         if group_or_individual:
+            catalog_filter_sort_serializer.validated_data.pop(
+                "members", None
+            )  # "group_or_individual" parameter has higher priority than "members"
             if group_or_individual == "individual":
                 group_or_individual_parameter.update({"members": 1})
                 if (
