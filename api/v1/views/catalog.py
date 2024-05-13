@@ -26,6 +26,7 @@ from catalog.dto import (
     UpdateGameInfoDTORequest,
 )
 from catalog.exceptions import GameInfoDoesNotExist
+from catalog.models import GameInfo
 from core.containers import ProjectContainer as GameInfoContainer
 
 
@@ -90,6 +91,18 @@ class APICreateGameInfoView(APIView, ApiBaseView):
 
         if not game_info_serializer_is_valid:
             return self._create_response_for_invalid_serializers(game_info_serializer)
+
+        game_name_ua = request.data.get("name_ua", None)
+        game_name_en = request.data.get("name_en", None)
+
+        existing_game_ua = GameInfo.objects.filter(name_ua=game_name_ua)
+        existing_game_en = GameInfo.objects.filter(name_en=game_name_en)
+
+        if existing_game_ua or existing_game_en:
+            return Response(
+                {"status": "error", "message": "A game with the same name already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         bytesio_file = request.data.get("photo_jpeg", None)
         game_info_dto = CreateGameInfoDTO(**game_info_serializer.validated_data)
