@@ -25,7 +25,7 @@ from catalog.dto import (
     FilterSortGameInfoDTORequest,
     UpdateGameInfoDTORequest,
 )
-from catalog.exceptions import GameInfoDoesNotExist
+from catalog.exceptions import GameInfoDoesNotExist, NameGameAlreadyExists
 from catalog.models import GameInfo
 from core.containers import ProjectContainer as GameInfoContainer
 
@@ -109,10 +109,14 @@ class APICreateGameInfoView(APIView, ApiBaseView):
 
         game_info_interactor = GameInfoContainer.game_info_interactor()
 
-        created_game_info = game_info_interactor.create_game_info(
-            game_info_dto, bytesio_file
-        )
-        created_game_info_serializer_data = created_game_info.model_dump()
+        try:
+            created_game_info = game_info_interactor.create_game_info(
+                game_info_dto, bytesio_file
+            )
+            created_game_info_serializer_data = created_game_info.model_dump()
+
+        except NameGameAlreadyExists as exception:
+            return self._create_response_for_exception(exception)
 
         return self._create_response_for_successful_game_info_creation(
             created_game_info_serializer_data

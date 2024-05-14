@@ -1,6 +1,11 @@
 from typing import List
 from uuid import UUID
 
+from django.db.models import Q
+from rest_framework import request
+
+
+
 from additional_service.services_interfaces import AdditionalServiceInterface
 from catalog.dto import (
     CreateGameInfoDTO,
@@ -9,6 +14,8 @@ from catalog.dto import (
     UpdateGameInfoDTORequest,
     StatisticsOnTheSiteDTOResponse,
 )
+from catalog.exceptions import NameGameAlreadyExists
+from catalog.models import GameInfo
 from catalog.services_interfaces import GameInfoServiceInterface
 
 
@@ -34,6 +41,15 @@ class GameInfoInteractor:
                 bytesio_file=bytesio_file,
             )
             game_info_dto.photo = image_path
+
+        game_name_ua = request.data.get("name_ua", None)
+        game_name_en = request.data.get("name_en", None)
+
+        existing_game = GameInfo.objects.filter(Q(name_ua=game_name_ua) | Q(name_en=game_name_en))
+
+        if existing_game:
+            raise NameGameAlreadyExists()
+
         return self.game_info_service.create_game_info(game_info_dto)
 
     def get_game_info_by_uuid(self, uuid: UUID) -> GameInfoDTOResponse:
