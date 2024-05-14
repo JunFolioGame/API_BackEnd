@@ -2,9 +2,7 @@ from typing import List
 from uuid import UUID
 
 from django.db.models import Q
-from rest_framework import request
-
-
+from rest_framework.request import Request
 
 from additional_service.services_interfaces import AdditionalServiceInterface
 from catalog.dto import (
@@ -23,15 +21,15 @@ class GameInfoInteractor:
     """Interactor for managing game_info"""
 
     def __init__(
-        self,
-        game_info_service: GameInfoServiceInterface,
-        additional_service: AdditionalServiceInterface,
+            self,
+            game_info_service: GameInfoServiceInterface,
+            additional_service: AdditionalServiceInterface,
     ):
         self.game_info_service = game_info_service
         self.additional_service = additional_service
 
     def create_game_info(
-        self, game_info_dto: CreateGameInfoDTO, bytesio_file
+            self, request: Request, game_info_dto: CreateGameInfoDTO, bytesio_file
     ) -> GameInfoDTOResponse:
         """Create new game_info"""
         if bytesio_file:
@@ -56,13 +54,13 @@ class GameInfoInteractor:
         return self.game_info_service.get_game_info_by_uuid(uuid)
 
     def update_game_info_by_uuid(
-        self, game_info_to_update: UpdateGameInfoDTORequest, bytesio_file
+            self, game_info_to_update: UpdateGameInfoDTORequest, bytesio_file
     ) -> GameInfoDTOResponse:
         if bytesio_file:
             image_path = self.additional_service.upload_file_to_s3(
                 group_name="game_info",
                 object_name=game_info_to_update.name_en
-                or game_info_to_update.uuid.__str__(),
+                            or game_info_to_update.uuid.__str__(),
                 bytesio_file=bytesio_file,
             )
             game_info_to_update.photo = image_path
@@ -82,19 +80,19 @@ class GameInfoInteractor:
         return self.game_info_service.get_all_game_info()
 
     def catalog_filter_sort(
-        self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
+            self, game_info_filter_sort_dto: FilterSortGameInfoDTORequest
     ) -> list[GameInfoDTOResponse]:
         return self.game_info_service.catalog_filter_sort(game_info_filter_sort_dto)
 
     def set_like_game_info_by_uuid(
-        self, game_info_uuid: UUID, player_uuid: UUID
+            self, game_info_uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
         return self.game_info_service.set_like_game_info_by_uuid(
             game_info_uuid, player_uuid
         )
 
     def unset_like_game_info_by_uuid(
-        self, game_info_uuid: UUID, player_uuid: UUID
+            self, game_info_uuid: UUID, player_uuid: UUID
     ) -> GameInfoDTOResponse:
         return self.game_info_service.unset_like_game_info_by_uuid(
             game_info_uuid, player_uuid
