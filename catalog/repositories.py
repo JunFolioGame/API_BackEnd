@@ -2,6 +2,7 @@ from uuid import UUID
 
 from annoying.functions import get_object_or_None
 from django.db import transaction
+from django.db.models import Q
 
 from catalog.dto import (
     CreateGameInfoDTO,
@@ -9,13 +10,21 @@ from catalog.dto import (
     GameInfoDTOResponse,
     UpdateGameInfoDTORequest,
 )
-from catalog.exceptions import GameInfoDoesNotExist
+from catalog.exceptions import GameInfoDoesNotExist, NameGameAlreadyExists
 from catalog.models import GameInfo, Like
 from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
 
 
 class GameInfoRepository(AbstractGameInfoRepositoryInterface):
     def create_game_info(self, game_info: CreateGameInfoDTO) -> GameInfoDTOResponse:
+        game_name_ua = CreateGameInfoDTO.name_ua
+        game_name_en = CreateGameInfoDTO.name_en
+
+        existing_game = GameInfo.objects.filter(Q(name_ua=game_name_ua) | Q(name_en=game_name_en))
+
+        if existing_game:
+            raise NameGameAlreadyExists()
+
         with transaction.atomic():
             game_info = GameInfo.objects.create(**game_info.model_dump())
             Like.objects.create(gameinfo=game_info)

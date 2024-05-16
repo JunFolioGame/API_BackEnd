@@ -29,7 +29,7 @@ class GameInfoInteractor:
         self.additional_service = additional_service
 
     def create_game_info(
-            self, request: Request, game_info_dto: CreateGameInfoDTO, bytesio_file
+            self, game_info_dto: CreateGameInfoDTO, bytesio_file
     ) -> GameInfoDTOResponse:
         """Create new game_info"""
         if bytesio_file:
@@ -39,14 +39,6 @@ class GameInfoInteractor:
                 bytesio_file=bytesio_file,
             )
             game_info_dto.photo = image_path
-
-        game_name_ua = request.data.get("name_ua", None)
-        game_name_en = request.data.get("name_en", None)
-
-        existing_game = GameInfo.objects.filter(Q(name_ua=game_name_ua) | Q(name_en=game_name_en))
-
-        if existing_game:
-            raise NameGameAlreadyExists()
 
         return self.game_info_service.create_game_info(game_info_dto)
 
