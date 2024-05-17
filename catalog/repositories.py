@@ -17,8 +17,8 @@ from catalog.repository_interfaces import AbstractGameInfoRepositoryInterface
 
 class GameInfoRepository(AbstractGameInfoRepositoryInterface):
     def create_game_info(self, game_info: CreateGameInfoDTO) -> GameInfoDTOResponse:
-        game_name_ua = CreateGameInfoDTO.name_ua
-        game_name_en = CreateGameInfoDTO.name_en
+        game_name_ua = game_info.name_ua
+        game_name_en = game_info.name_en
 
         existing_game = GameInfo.objects.filter(Q(name_ua=game_name_ua) | Q(name_en=game_name_en))
 
