@@ -20,7 +20,9 @@ class GameInfoRepository(AbstractGameInfoRepositoryInterface):
         game_name_ua = game_info.name_ua
         game_name_en = game_info.name_en
 
-        existing_game = GameInfo.objects.filter(Q(name_ua=game_name_ua) | Q(name_en=game_name_en))
+        existing_game = GameInfo.objects.filter(
+            Q(name_ua=game_name_ua) | Q(name_en=game_name_en)
+        )
 
         if existing_game:
             raise NameGameAlreadyExists()

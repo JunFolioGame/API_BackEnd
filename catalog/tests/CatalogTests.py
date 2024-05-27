@@ -5,25 +5,25 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from catalog.dto import CreateGameInfoDTO
+from catalog.models import GameInfo
 from catalog.repositories import GameInfoRepository
 from game_session.models import GameSession
 from game_session.repositories import GameSessionRepository
 from players.models import Player
-from catalog.models import GameInfo
 from players.repositories import PlayerRepository
 
 
 class CatalogTests(APITestCase):
     def setUp(self):
         with open(
-                os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
+            os.path.join(os.path.dirname(__file__), "sample_photo.jpg"), "rb"
         ) as photo_file:
             self.photo_jpeg = SimpleUploadedFile(
                 "sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
             )
 
         with open(
-                os.path.join(os.path.dirname(__file__), "wrong_sample_photo.jpg"), "rb"
+            os.path.join(os.path.dirname(__file__), "wrong_sample_photo.jpg"), "rb"
         ) as photo_file:
             self.wrong_photo_jpeg = SimpleUploadedFile(
                 "wrong_sample_photo.jpg", photo_file.read(), content_type="image/jpeg"
@@ -237,8 +237,8 @@ class CatalogTests(APITestCase):
         assert response.status_code == 200
         assert response.data["status"] == "Success"
         assert (
-                response.data["message"]
-                == "Successful get statistics about games on the site"
+            response.data["message"]
+            == "Successful get statistics about games on the site"
         )
 
         game = response.data["data"]
@@ -296,7 +296,6 @@ class CatalogTests(APITestCase):
             "description_en": "test_2",
             "is_active": True,
         }
-
 
         response = self.client.post("/api/v1/game_info/", data=create_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -359,7 +358,7 @@ class CatalogTests(APITestCase):
             "Successfully received an all game info, "
             "                or with additional filtering and sorted",
         )
-        self.assertEqual(len(response.data['data']), 2)
+        self.assertEqual(len(response.data["data"]), 2)
 
     def test_individual_games_filter(self):
         individual_data = {"group_or_individual": "individual"}
@@ -372,8 +371,8 @@ class CatalogTests(APITestCase):
             "Successfully received an all game info, "
             "                or with additional filtering and sorted",
         )
-        self.assertEqual(response.data['data'][0]['members'], 1)
-        self.assertEqual(len(response.data['data']), 2)
+        self.assertEqual(response.data["data"][0]["members"], 1)
+        self.assertEqual(len(response.data["data"]), 2)
 
     def test_sort_by_popularity(self):
         popularity_data = {"sort_selection": "popularity"}
@@ -383,12 +382,13 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["status"], "Success")
         self.assertEqual(
             response.data["message"],
-            "Successfully received an all game info,                 or with additional filtering and sorted",
+            "Successfully received an all game info,                 \
+                or with additional filtering and sorted",
         )
-        self.assertEqual(response.data['data'][0]['name_ua'], "Test Name UA")
-        self.assertEqual(response.data['data'][1]['name_ua'], "Game1 Name UA")
-        self.assertEqual(response.data['data'][2]['name_ua'], "Game2 Name UA")
-        self.assertEqual(response.data['data'][3]['name_ua'], "Game3 Name UA")
+        self.assertEqual(response.data["data"][0]["name_ua"], "Test Name UA")
+        self.assertEqual(response.data["data"][1]["name_ua"], "Game1 Name UA")
+        self.assertEqual(response.data["data"][2]["name_ua"], "Game2 Name UA")
+        self.assertEqual(response.data["data"][3]["name_ua"], "Game3 Name UA")
 
     def test_sort_by_newness(self):
         newness_data = {"sort_selection": "newness"}
@@ -398,11 +398,12 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["status"], "Success")
         self.assertEqual(
             response.data["message"],
-            "Successfully received an all game info,                 or with additional filtering and sorted",
+            "Successfully received an all game info,                 \
+                or with additional filtering and sorted",
         )
-        self.assertEqual(response.data['data'][0]['name_ua'], "Game3 Name UA")
-        self.assertEqual(response.data['data'][1]['name_ua'], "Game2 Name UA")
-        self.assertEqual(response.data['data'][2]['name_ua'], "Game1 Name UA")
+        self.assertEqual(response.data["data"][0]["name_ua"], "Game3 Name UA")
+        self.assertEqual(response.data["data"][1]["name_ua"], "Game2 Name UA")
+        self.assertEqual(response.data["data"][2]["name_ua"], "Game1 Name UA")
 
     def test_sort_by_members(self):
         members_data = {"sort_selection": "member"}
@@ -412,9 +413,10 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["status"], "Success")
         self.assertEqual(
             response.data["message"],
-            "Successfully received an all game info,                 or with additional filtering and sorted",
+            "Successfully received an all game info,                 \
+                or with additional filtering and sorted",
         )
-        self.assertEqual(response.data['data'][0]['name_ua'], "Test Name UA")
-        self.assertEqual(response.data['data'][1]['name_ua'], "Game3 Name UA")
-        self.assertEqual(response.data['data'][2]['name_ua'], "Game1 Name UA")
-        self.assertEqual(response.data['data'][3]['name_ua'], "Game2 Name UA")
+        self.assertEqual(response.data["data"][0]["name_ua"], "Test Name UA")
+        self.assertEqual(response.data["data"][1]["name_ua"], "Game3 Name UA")
+        self.assertEqual(response.data["data"][2]["name_ua"], "Game1 Name UA")
+        self.assertEqual(response.data["data"][3]["name_ua"], "Game2 Name UA")
