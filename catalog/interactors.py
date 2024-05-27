@@ -6,8 +6,8 @@ from catalog.dto import (
     CreateGameInfoDTO,
     FilterSortGameInfoDTORequest,
     GameInfoDTOResponse,
-    UpdateGameInfoDTORequest,
     StatisticsOnTheSiteDTOResponse,
+    UpdateGameInfoDTORequest,
 )
 from catalog.services_interfaces import GameInfoServiceInterface
 
@@ -34,6 +34,7 @@ class GameInfoInteractor:
                 bytesio_file=bytesio_file,
             )
             game_info_dto.photo = image_path
+
         return self.game_info_service.create_game_info(game_info_dto)
 
     def get_game_info_by_uuid(self, uuid: UUID) -> GameInfoDTOResponse:
