@@ -382,8 +382,8 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["status"], "Success")
         self.assertEqual(
             response.data["message"],
-            "Successfully received an all game info,                 \
-                or with additional filtering and sorted",
+            "Successfully received an all game info,\
+                 or with additional filtering and sorted",
         )
         self.assertEqual(response.data["data"][0]["name_ua"], "Test Name UA")
         self.assertEqual(response.data["data"][1]["name_ua"], "Game1 Name UA")
@@ -398,8 +398,8 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["status"], "Success")
         self.assertEqual(
             response.data["message"],
-            "Successfully received an all game info,                 \
-                or with additional filtering and sorted",
+            "Successfully received an all game info,\
+                 or with additional filtering and sorted",
         )
         self.assertEqual(response.data["data"][0]["name_ua"], "Game3 Name UA")
         self.assertEqual(response.data["data"][1]["name_ua"], "Game2 Name UA")
@@ -413,8 +413,8 @@ class CatalogTests(APITestCase):
         self.assertEqual(response.data["status"], "Success")
         self.assertEqual(
             response.data["message"],
-            "Successfully received an all game info,                 \
-                or with additional filtering and sorted",
+            "Successfully received an all game info,\
+                 or with additional filtering and sorted",
         )
         self.assertEqual(response.data["data"][0]["name_ua"], "Test Name UA")
         self.assertEqual(response.data["data"][1]["name_ua"], "Game3 Name UA")
