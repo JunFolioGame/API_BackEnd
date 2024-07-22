@@ -26,4 +26,7 @@ urlpatterns = [
     path("", staff_protected_schema_view, name="schema-swagger-ui"),
     path("api/v1/", include("api.v1.urls", namespace="api")),
     path("__debug__/", include("debug_toolbar.urls")),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
 ]
+

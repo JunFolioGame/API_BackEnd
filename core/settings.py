@@ -85,6 +85,11 @@ INSTALLED_APPS = [
     "gallery.apps.GalleryConfig",
     "game_session.apps.GameSessionConfig",
     "api.v1.apps.ApiConfig",
+    'indie_developers',
+    # registration
+    'rest_framework.authtoken',
+    'djoser',
+
 ]
 
 MIDDLEWARE = [
@@ -156,6 +161,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'indie_developers.DeveloperUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -203,6 +209,9 @@ SIMPLE_JWT = {
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     ),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -255,8 +264,15 @@ SWAGGER_SETTINGS = {
     },
 }
 
-# USE_X_FORWARDED_HOST = True
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS': {
+        'user_create': 'indie_developers.serializers.DeveloperRegistrationSerializer',
+        'current_user': 'indie_developers.serializers.DeveloperSerializer',
+    },
+}
+
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis_container_service")
 REDIS_PORT = os.getenv("REDIS_PORT", 6379)
