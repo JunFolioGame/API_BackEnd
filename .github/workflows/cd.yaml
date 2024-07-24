@@ -20,8 +20,8 @@ jobs:
             ssh-add /home/ubuntu/.ssh/github_action_rca
             cd ${{  secrets.PROJECT_PATH }}
             git pull origin dev
-            docker-compose -f docker-compose_dev.yml rm -sf
-            docker-compose -f docker-compose_dev.yml up --build -d
+            docker-compose -f docker-compose_prod.yml rm -sf
+            docker-compose -f docker-compose_prod.yml up --build -d
             docker image prune -af
 
   #publish:
