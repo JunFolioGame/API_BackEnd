@@ -17,3 +17,5 @@ COPY . /code
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh /entrypoint_prod.sh
+RUN chmod +x /entrypoint_prod.sh
