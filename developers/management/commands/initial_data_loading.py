@@ -64,6 +64,7 @@ class Command(BaseCommand):
         )
         data_catalog_json = os.getenv("DATA_CATALOG_JSON", "data_catalog.json")
         url_initial_data = os.getenv("URL_INITIAL_DATA", "")
+        system_icon_description = os.getenv("IGNORE_GAME_INFO", ".")
 
         factory = RequestFactory()
 
@@ -130,6 +131,12 @@ class Command(BaseCommand):
                     print(
                         f"Інформація про гру {game_info['name_en']} успішно створена."
                     )
+                    if game_info["description_ua"] == system_icon_description:
+                        res = GameInfo.objects.filter(
+                            description_ua=system_icon_description
+                        ).delete()
+                        print("Видаляємо екземпляр системного значка з БД. ", res)
+                        # Видаляємо інформацію з БД для файлів зображень системного значка
                 else:
                     print(
                         f"Не вдалося створити інформацію про гру {game_info['name_en']}. "

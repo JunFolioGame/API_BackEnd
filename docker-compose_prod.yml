@@ -19,7 +19,7 @@ services:
     restart: always
     build: .
     container_name: backend_service_jf
-    command: ["/entrypoint.sh"]
+    command: ["/entrypoint_prod.sh"]
     environment:
       - PYTHONUNBUFFERED=True
     env_file:
