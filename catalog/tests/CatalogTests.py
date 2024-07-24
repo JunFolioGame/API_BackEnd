@@ -4,6 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from additional_service.upload_delete_file import AdditionalService
 from catalog.dto import CreateGameInfoDTO
 from catalog.models import GameInfo
 from catalog.repositories import GameInfoRepository
@@ -119,6 +120,8 @@ class CatalogTests(APITestCase):
         self.assertEqual(game["description_ua"], "Test Description UA 2")
         self.assertEqual(game["description_en"], "Test Description EN 2")
         self.assertEqual(game["members"], 10)
+        # Видаляємо фото, щоб не засмічувати пам'ять
+        AdditionalService.delete_file_from_s3(self, photo_url=game["photo"])
 
     # Negative test case for APICreateGameInfoView post method
     def test_create_game_info_failure_invalid_data(self):
@@ -184,6 +187,8 @@ class CatalogTests(APITestCase):
         self.assertEqual(game["is_team"], True)
         self.assertEqual(game["is_active"], False)
         self.assertEqual(game["members"], 20)
+        # Видаляємо фото, щоб не засмічувати пам'ять
+        AdditionalService.delete_file_from_s3(self, photo_url=game["photo"])
 
     # Negative test case for ApiGameInfoView put method
     def test_update_game_info_failure_not_found(self):

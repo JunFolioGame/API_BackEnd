@@ -6,6 +6,7 @@ from django.http.cookie import SimpleCookie
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from additional_service.upload_delete_file import AdditionalService
 from catalog.dto import CreateGameInfoDTO
 from catalog.repositories import GameInfoRepository
 from gallery.dto import CreateGalleryDTO
@@ -80,14 +81,12 @@ class GalleryTests(APITestCase):
 
     # -------------------------------------GALLERY LIST---------------------------------
     def test_gallery_list_wrong_invalid_page(self):
-
         response = self.client.get(self.url + str(self.game_uuid) + "?page=2")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         data = response.data
         self.assertEqual(data["detail"], "Invalid page.")
 
     def test_gallery_list_wrong_not_found(self):
-
         while True:
             random_uuid = uuid4()
             if random_uuid != self.game_uuid:
@@ -101,7 +100,6 @@ class GalleryTests(APITestCase):
         self.assertEqual(data["message"], "GameInfo doesn't exist")
 
     def test_gallery_list_success(self):
-
         response = self.client.get(
             self.url + str(self.game_uuid),
         )
@@ -133,7 +131,6 @@ class GalleryTests(APITestCase):
 
     # --------------------------------------RETRIEVE GALLERY----------------------------
     def test_gallery_retrieve_wrong_not_found(self):
-
         while True:
             random_uuid = uuid4()
             if random_uuid not in [self.gallery1_uuid, self.gallery2_uuid]:
@@ -241,6 +238,8 @@ class GalleryTests(APITestCase):
         self.assertEqual(item["text"], "TEXTEXTTEXT")
         self.assertEqual(item["team_name"], "Команда 2")
         self.assertEqual(item["likes"], 0)
+        # Видаляємо фото, щоб не засмічувати пам'ять
+        AdditionalService.delete_file_from_s3(self, photo_url=item["photo"])
 
     # -------------------------------------LIKE GALLERY---------------------------------
 
@@ -268,7 +267,6 @@ class GalleryTests(APITestCase):
         self.assertEqual(data["message"], "GalleryItem doesn't exist")
 
     def test_gallery_like_success(self):
-
         self.client.cookies = SimpleCookie({"PLAYER_UUID": self.player2_uuid})
         response = self.client.get(self.url + str(self.gallery2_uuid) + "/like")
 
@@ -311,7 +309,6 @@ class GalleryTests(APITestCase):
         self.assertEqual(data["message"], "GalleryItem doesn't exist")
 
     def test_gallery_unlike_success(self):
-
         self.client.cookies = SimpleCookie({"PLAYER_UUID": self.player1_uuid})
         response = self.client.get(self.url + str(self.gallery2_uuid) + "/unlike")
 
