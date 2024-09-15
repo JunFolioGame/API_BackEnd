@@ -85,6 +85,8 @@ INSTALLED_APPS = [
     "gallery.apps.GalleryConfig",
     "game_session.apps.GameSessionConfig",
     "api.v1.apps.ApiConfig",
+    # registration
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -202,7 +204,7 @@ SIMPLE_JWT = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -214,6 +216,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.MultiPartParser",
     ],
     "EXCEPTION_HANDLER": "api.v1.exceptions.custom_exception_handler",
+
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
