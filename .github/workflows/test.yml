@@ -15,7 +15,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: postgres_pass
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -49,8 +49,8 @@ jobs:
         env:
           DATABASE_NAME: postgres
           DATABASE_USER: postgres
-          DATABASE_PASS: postgres
-          DATABASE_HOST: postgres
+          DATABASE_PASS: postgres_pass
+          DATABASE_HOST: postgres_service
           DATABASE_PORT: 5432
           # REDIS_LOCATION: redis://redis:6379/?db=0
           # REDIS_PASSWORD:
