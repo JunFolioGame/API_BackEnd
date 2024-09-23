@@ -47,6 +47,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "SECRET_KEY"
 SECRET_KEY = os.getenv("SECRET_KEY", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -97,6 +98,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -106,7 +108,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # 3rd party
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     # user middleware
     # 'accounts.middleware.ValidationErrorMiddleware',
 ]
@@ -285,23 +286,23 @@ CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 
 DEFAULT_CHARSET = "utf-8"
 #
-# CSRF_TRUSTED_ORIGINS = [
-#     "http://localhost:80",
-#     "http://localhost:8000",
-#     "http://localhost:7777",
-#     "https://localhost:3001",
-#     "http://localhost:3000",
-#     "http://localhost:3339",
-#     "https://localhost:3339",
-#     "http://localhost:5001",
-#     "https://localhost:5001",
-#     "https://api-backend.naratyv-creative.fun",
-#     "http://213.199.63.47:7777",
-#     "http://213.199.63.47:3339",
-#     "https://213.199.63.47:3339",
-#     "http://213.199.63.47:5001",
-#     "https://213.199.63.47:5001",
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:80",
+    "http://localhost:8000",
+    "http://localhost:7777",
+    "https://localhost:3001",
+    "http://localhost:3000",
+    "http://localhost:3339",
+    "https://localhost:3339",
+    "http://localhost:5001",
+    "https://localhost:5001",
+    "https://api-backend.naratyv-creative.fun",
+    "http://213.199.63.47:7777",
+    "http://213.199.63.47:3339",
+    "https://213.199.63.47:3339",
+    "http://213.199.63.47:5001",
+    "https://213.199.63.47:5001",
+]
 
 
 CORS_ORIGIN_ALLOW_ALL = True
