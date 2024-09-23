@@ -58,7 +58,16 @@ ALLOWED_HOSTS = [
     "http://localhost:7777",
     "https://localhost:3001",
     "http://localhost:3000",
+    "http://localhost:3339",
+    "https://localhost:3339",
+    "http://localhost:5001",
+    "https://localhost:5001",
     "https://api-backend.naratyv-creative.fun",
+    "http://213.199.63.47:7777",
+    "http://213.199.63.47:3339",
+    "https://213.199.63.47:3339",
+    "http://213.199.63.47:5001",
+    "https://213.199.63.47:5001",
     "*",
 ]
 
@@ -244,7 +253,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:7777",
     "https://localhost:3001",
     "http://localhost:3000",
+    "http://localhost:3339",
+    "https://localhost:3339",
+    "http://localhost:5001",
+    "https://localhost:5001",
     "https://api-backend.naratyv-creative.fun",
+    "http://213.199.63.47:7777",
+    "http://213.199.63.47:3339",
+    "https://213.199.63.47:3339",
+    "http://213.199.63.47:5001",
+    "https://213.199.63.47:5001",
 ]
 
 SWAGGER_SETTINGS = {
@@ -273,7 +291,16 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:7777",
     "https://localhost:3001",
     "http://localhost:3000",
+    "http://localhost:3339",
+    "https://localhost:3339",
+    "http://localhost:5001",
+    "https://localhost:5001",
     "https://api-backend.naratyv-creative.fun",
+    "http://213.199.63.47:7777",
+    "http://213.199.63.47:3339",
+    "https://213.199.63.47:3339",
+    "http://213.199.63.47:5001",
+    "https://213.199.63.47:5001",
 ]
 
 
